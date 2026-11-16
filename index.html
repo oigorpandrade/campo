@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Controle de campo</title>
+<meta charset="utf-8">
+<style>
+:root{
+  --azul:#1b365d; --azul2:#27497a; --teal:#0e7c86; --teal-c:#e3f2f3; --verde:#2e7d4f; --verde-c:#e5f3ea;
+  --ambar:#a8650a; --ambar-c:#fdf1dc; --verm:#b42318; --verm-c:#fdebe9; --azul-c:#e8eef7;
+  --cinza:#5b6472; --cinza-c:#f1f3f6; --borda:#e1e5eb; --fundo:#f6f7f9; --txt:#1d2430;
+  --r:10px; --sombra:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fundo);color:var(--txt);font:14px/1.45 Calibri,"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+a{color:var(--teal)}
+button{font:inherit;cursor:pointer}
+.topo{background:var(--azul);color:#fff;padding:0 24px;display:flex;align-items:center;gap:20px;height:58px;position:sticky;top:0;z-index:20}
+.marca{font-weight:700;letter-spacing:.2px;white-space:nowrap}
+.marca small{display:block;font-weight:400;opacity:.75;font-size:12px;margin-top:-2px}
+.nav{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{background:transparent;border:0;color:#cfd9e8;padding:8px 12px;border-radius:8px;white-space:nowrap;font-size:14px}
+.nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav button.ativo{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+.nav .pill{background:#f5b041;color:#1b365d;border-radius:20px;padding:0 7px;font-size:11px;font-weight:700;margin-left:6px}
+.usuario{font-size:12px;text-align:right;opacity:.85;white-space:nowrap}
+.usuario button{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:6px;padding:3px 8px;margin-left:6px;font-size:12px}
+main{max-width:1320px;margin:0 auto;padding:22px 24px 60px}
+h1{font-size:20px;margin:0 0 4px;color:var(--azul)}
+.sub{color:var(--cinza);margin:0 0 18px;font-size:13px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:16px}
+.card{background:#fff;border:1px solid var(--borda);border-radius:var(--r);box-shadow:var(--sombra)}
+.kpi{padding:14px 16px}
+.kpi .rot{font-size:12px;color:var(--cinza);text-transform:uppercase;letter-spacing:.4px}
+.kpi .val{font-size:26px;font-weight:700;color:var(--azul);margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:14px;color:var(--cinza);font-weight:400}
+.kpi .det{font-size:12px;color:var(--cinza);margin-top:2px}
+.barra{height:8px;background:var(--cinza-c);border-radius:6px;overflow:hidden;display:flex;margin-top:8px}
+.barra i{display:block;height:100%}
+.barra .ap{background:var(--verde)} .barra .pe{background:#e3a63a}
+.bloco{padding:16px 18px;margin-bottom:16px}
+.bloco h2{font-size:15px;margin:0 0 12px;color:var(--azul);display:flex;align-items:center;gap:10px}
+.bloco h2 .dir{margin-left:auto;font-weight:400;font-size:12px;color:var(--cinza)}
+.duas{grid-template-columns:1.4fr 1fr}
+@media(max-width:980px){.duas{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:600;color:var(--cinza);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--borda);white-space:nowrap;background:#fafbfc}
+td{padding:8px 10px;border-bottom:1px solid #eef1f4;vertical-align:middle}
+tr:hover td{background:#fafcff}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tab-wrap{overflow:auto;border-radius:var(--r)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+.b-abordar{background:var(--teal-c);color:var(--teal)} .b-agendada{background:var(--azul-c);color:var(--azul2)}
+.b-validacao{background:var(--ambar-c);color:var(--ambar)} .b-ok{background:var(--verde-c);color:var(--verde)}
+.b-cota{background:var(--cinza-c);color:var(--cinza)} .b-limite{background:#e9ebef;color:#424b59}
+.b-recusa{background:var(--verm-c);color:var(--verm)} .b-anulada{background:#fff;color:var(--verm);border:1px solid #f1b8b2}
+.b-alerta{background:var(--verm-c);color:var(--verm);font-weight:500} .b-info{background:var(--azul-c);color:var(--azul2);font-weight:500}
+.filtros{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+input[type=search],input[type=text],select,textarea{font:inherit;border:1px solid #cfd6df;border-radius:8px;padding:7px 10px;background:#fff;color:var(--txt)}
+input[type=search]{min-width:240px;flex:1;max-width:360px}
+textarea{width:100%;min-height:70px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{border:1px solid var(--borda);background:#fff;border-radius:20px;padding:4px 10px;font-size:12px;color:var(--cinza)}
+.chip b{color:var(--txt);margin-left:4px}
+.chip.ativo{border-color:var(--teal);background:var(--teal-c);color:var(--teal)}
+.btn{border:1px solid #cfd6df;background:#fff;border-radius:8px;padding:6px 12px;font-size:13px;color:var(--txt);display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:#9fb0c4;background:#fafbfc}
+.btn-p{background:var(--teal);border-color:var(--teal);color:#fff}.btn-p:hover{background:#0b6970;border-color:#0b6970}
+.btn-ok{background:var(--verde);border-color:var(--verde);color:#fff}.btn-ok:hover{background:#256641}
+.btn-x{color:var(--verm);border-color:#efc2bd}.btn-x:hover{background:var(--verm-c)}
+.btn-s{padding:4px 9px;font-size:12px}
+.acoes{display:flex;gap:6px;justify-content:flex-end}
+.muted{color:var(--cinza)} .peq{font-size:12px}
+.vazio{padding:36px;text-align:center;color:var(--cinza)}
+.avisos li{margin-bottom:6px} .avisos{padding-left:18px;margin:0}
+.seg{display:inline-flex;border:1px solid #cfd6df;border-radius:8px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:6px 12px;font-size:13px;border-right:1px solid #e3e7ec;color:var(--cinza)}
+.seg button:last-child{border-right:0}.seg button.ativo{background:var(--azul);color:#fff}
+.ent{padding:14px 16px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.ent .l1{font-size:12px;color:var(--cinza)} .ent .l2{font-size:15px;font-weight:600;margin:2px 0 6px}
+.ent .tags{display:flex;flex-wrap:wrap;gap:6px}
+.pres td{text-align:center;padding:6px} .pres th{text-align:center}
+.pres td:first-child,.pres th:first-child{text-align:left}
+.cel{width:38px;height:32px;border-radius:7px;border:1px dashed #cdd5df;background:#fff;color:transparent;font-weight:700}
+.cel.on{background:var(--verde);border:1px solid var(--verde);color:#fff}
+.cel.warn{border:1.5px solid #e38b2c;background:var(--ambar-c)}
+.cel small{display:block;font-size:10px;color:var(--cinza)}
+.ativ{font-size:10px;color:var(--cinza);display:block;margin-top:2px;min-height:12px}
+.lista-ap{display:grid;gap:10px}
+.cp{padding:14px 16px;display:flex;gap:12px;align-items:center}
+.cp .gab{min-width:76px;text-align:center;background:var(--azul-c);color:var(--azul);border-radius:8px;padding:8px 6px;font-weight:700;line-height:1.1}
+.cp .gab small{display:block;font-weight:400;font-size:11px;color:var(--cinza);margin-top:2px}
+.cp .info{flex:1;min-width:0}.cp .nome{font-weight:600;font-size:15px}
+.cp .acoes{flex-direction:column;align-items:stretch}
+@media(max-width:640px){
+  .topo{padding:8px 12px 0;gap:6px 10px;height:auto;flex-wrap:wrap}.marca small,#quem,#atual{display:none}
+  .usuario{margin-left:auto}.nav{order:3;flex-basis:100%;padding-bottom:6px}
+  .carregando{top:0}
+  .filtros>*{flex:1 1 100%}.filtros .seg{display:flex}.filtros .seg button{flex:1}
+  .saud{gap:10px}.saud .ola{flex-basis:100%}.mini{flex:1}
+  main{padding:14px 12px 60px} input[type=search]{min-width:0;width:100%;max-width:none}
+  .cp{flex-wrap:wrap}.cp .acoes{flex-direction:row;width:100%}.cp .acoes .btn{flex:1;justify-content:center}
+}
+.modal{position:fixed;inset:0;background:rgba(16,24,40,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.aberto{display:flex}
+.modal .box{background:#fff;border-radius:12px;max-width:480px;width:100%;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,.2)}
+.modal h3{margin:0 0 4px;color:var(--azul);font-size:17px}
+.modal label{display:block;font-size:12px;color:var(--cinza);margin:12px 0 4px;font-weight:600}
+.modal select,.modal input{width:100%}
+.modal .rod{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2430;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}.toast.erro{background:var(--verm)}
+.carregando{position:fixed;top:58px;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--teal),transparent);background-size:50% 100%;animation:car 1s linear infinite;display:none;z-index:30}
+.carregando.on{display:block}
+@keyframes car{from{background-position:-50% 0}to{background-position:150% 0}}
+.legenda{display:flex;gap:14px;font-size:12px;color:var(--cinza);margin-top:8px;flex-wrap:wrap}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.saud{padding:16px 18px;margin-bottom:14px;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.saud .ola{flex:1;min-width:200px}.saud .ola b{font-size:17px;color:var(--azul)}
+.mini{text-align:center;min-width:86px}.mini .v{font-size:20px;font-weight:700;color:var(--azul)}.mini .r{font-size:11px;color:var(--cinza);text-transform:uppercase}
+.tot td{font-weight:700;background:#fafbfc}
+
+/* v02 */
+.b-nv{background:#eceff3;color:#424b59;border:1px dashed #9aa5b4}
+.btn-g{font-size:17px;padding:14px 28px;border-radius:10px;font-weight:600}
+.foto{width:64px;height:80px;border-radius:8px;object-fit:cover;background:var(--cinza-c);flex:none}
+.cp.fim{opacity:.6}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="marca">Controle de campo<small id="pesq"></small></div>
+  <nav class="nav" id="nav"></nav>
+  <div class="usuario"><span id="quem"></span><button onclick="carregar()" title="Atualizar">Atualizar</button><div class="peq" id="atual"></div></div>
+</header>
+<div class="carregando" id="car"></div>
+<main id="main"><div class="vazio">Carregando dados do campo...<br><span class="peq">Na primeira abertura pode levar até 20 segundos.</span></div></main>
+<div class="modal" id="modal"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>window.API_URL = 'https://script.google.com/macros/s/AKfycbyOad2ydFl9xA1v1Bm9da1Rl75StdLGNrHtm5Vkj-wI-c7La6zqf1xofxGUNGUCzRKO/exec';</script>
+<script>
+// API_URL é definida só na página hospedada fora do Google; no Apps Script fica vazia e as chamadas usam google.script.run.
+const API_URL = window.API_URL || '';
+const TOKEN = API_URL ? ((location.hash.match(/t=([0-9a-f]+)/i) || [])[1] || '') : '';
+let PAPEL = API_URL ? '' : '';
+let NOME = API_URL ? '' : '';
+let D = null;
+let VIEW = '';
+
+const F = { busca: '', estrato: '', orient: '', predio: '', sit: 'Pendente', atrib: '' };
+
+// ---------- utilidades
+const $ = s => document.querySelector(s);
+const esc = s => String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const brl = v => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pct = (v, d = 1) => v === null || v === undefined ? '–' : (v * 100).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+const num = (v, d = 0) => v === null || v === undefined || isNaN(v) ? '–' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const parl = p => esc(p.nome) + ' <span class="muted">(' + esc(p.partido) + '/' + esc(p.uf) + ')</span>';
+const DIAS_SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const diaSem = d => { const m = d.split('/'); return DIAS_SEM[new Date(+m[2], +m[1] - 1, +m[0]).getDay()]; };
+const ORIENT = {
+  'Não entrevistado': 'b-abordar', 'Agendada': 'b-agendada', 'Em validação': 'b-validacao', 'Entrevistado': 'b-ok',
+  'Estrato fechado': 'b-cota', 'Limite de tentativas': 'b-limite', 'Recusa': 'b-recusa', 'Inelegível': 'b-cota'
+};
+
+const SIT = {
+  'Pendente': 'b-validacao', 'Aprovada': 'b-ok', 'Anulada': 'b-anulada',
+  'Não validada: estrato fechado': 'b-nv', 'Não validada: duplicidade': 'b-nv'
+};
+
+const badge = (t, cls) => '<span class="badge ' + (cls || ORIENT[t] || SIT[t] || 'b-cota') + '">' + esc(t) + '</span>';
+
+function toast(msg, erro) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast on' + (erro ? ' erro' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.className = 'toast', erro ? 6000 : 2800);
+}
+function carregando(on) { $('#car').className = 'carregando' + (on ? ' on' : ''); }
+
+function chamar(fn, args, ok) {
+  carregando(true);
+  const fim = r => { carregando(false); ok && ok(r); };
+  const erro = e => {
+    carregando(false);
+    const msg = (e && e.message) || String(e);
+    if (!D) $('#main').innerHTML = '<div class="vazio"><p>' + esc(msg) + '</p><p><button class="btn btn-p" onclick="$(\'#main\').innerHTML=\'<div class=vazio>Carregando dados do campo...</div>\';carregar(true)">Tentar de novo</button></p></div>';
+    else toast(msg, true);
+  };
+  if (API_URL) {
+    fetch(API_URL, {
+      method: 'POST', credentials: 'omit', redirect: 'follow', cache: 'no-store',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fn: fn, t: TOKEN, args: args || [] })
+    })
+      .then(r => { if (!r.ok) throw new Error('Servidor indisponível (' + r.status + '). Toque em Atualizar.'); return r.json(); })
+      .then(j => { if (!j || !j.ok) throw new Error((j && j.erro) || 'Erro no servidor.'); fim(j.r); })
+      .catch(e => erro(/fetch|network|load failed/i.test((e && e.message) || '') ? new Error('Sem conexão com o servidor. Verifique a internet e toque em Atualizar.') : e));
+    return;
+  }
+  if (window.google && google.script && google.script.run) {
+    google.script.run.withSuccessHandler(fim).withFailureHandler(erro)[fn].apply(null, [TOKEN].concat(args || []));
+  } else if (window.MOCK) {
+    try { fim(window.MOCK(fn, args)); } catch (e) { erro(e); }
+  }
+}
+
+function carregar(silencioso) {
+  chamar('apiDados', [], s => { D = JSON.parse(s); PAPEL = D.papel; NOME = D.nome; render(); if (!silencioso) toast('Dados atualizados'); });
+}
+setInterval(() => { if (!$('#modal').classList.contains('aberto') && document.visibilityState === 'visible') carregar(true); }, 90000);
+
+function linkForm(gab, codAplic) {
+  const pf = D.prefill || {};
+  if (!pf.base) return '';
+  const ap = (D.aplicadores || []).find(a => a.cod === codAplic) || D.aplicador;
+  const q = ['usp=pp_url'];
+  if (ap && pf.eAplic) q.push('entry.' + pf.eAplic + '=' + encodeURIComponent(ap.cod + ' · ' + ap.nome));
+  if (gab && pf.eGab) q.push('entry.' + pf.eGab + '=' + encodeURIComponent(gab));
+  return pf.base + '?' + q.join('&');
+}
+
+// ---------- estrutura
+function render() {
+  if (!D) return;
+  if (!VIEW) VIEW = PAPEL === 'coord' ? 'painel' : 'campo';
+  $('#pesq').textContent = D.pesquisa || '';
+  $('#quem').textContent = D.nome + (PAPEL === 'coord' ? ' · coordenação' : ' · aplicador');
+  $('#atual').textContent = 'Atualizado em ' + D.atualizado;
+  const minha = PAPEL === 'aplic' && D.dirigida.ativa && D.dirigida.minha.length;
+  const itens = PAPEL === 'coord'
+    ? [['painel', 'Painel'], ['validacao', 'Validação', D.kpis.pend], ['dirigida', 'Fase dirigida', D.dirigida.ativa ? D.dirigida.semAtrib : 0], ['parlamentares', 'Parlamentares'], ['presenca', 'Presença'], ['pagamentos', 'Pagamentos'], ['equipe', 'Aplicadores']]
+    : [['campo', 'Campo']].concat(minha ? [['minhalista', 'Minha lista', D.dirigida.minha.filter(p => p.orient === 'Não entrevistado' || p.orient === 'Agendada').length]] : []).concat([['meus', 'Meus resultados']]);
+  if (!VIEWS[VIEW] || (VIEW === 'minhalista' && !minha)) VIEW = itens[0][0];
+  $('#nav').innerHTML = itens.map(i => '<button class="' + (VIEW === i[0] ? 'ativo' : '') + '" onclick="ir(\'' + i[0] + '\')">' + i[1] +
+    (i[2] ? '<span class="pill">' + i[2] + '</span>' : '') + '</button>').join('');
+  $('#main').innerHTML = VIEWS[VIEW]();
+  if (LISTAS[VIEW]) LISTAS[VIEW]();
+}
+
+function ir(v) { VIEW = v; F.busca = ''; F.orient = ''; F.estrato = ''; F.predio = ''; F.atrib = ''; render(); window.scrollTo(0, 0); }
+
+function setF(k, v) { F[k] = v; if (LISTAS[VIEW]) LISTAS[VIEW](); else render(); }
+
+const VIEWS = {}, LISTAS = {};
+
+// ---------- painel (coordenação)
+VIEWS.painel = () => {
+  const k = D.kpis, dg = D.dirigida, es = k.estratos;
+  const pctMeta = Math.min(1, k.aprov / k.meta), pctPend = Math.min(1 - pctMeta, k.pend / k.meta);
+  const acaoEst = e => e.fechado
+    ? '<button class="btn btn-s" onclick="estrato(\'' + encodeURIComponent(e.estrato) + '\',\'Reabertura\')">Reabrir</button>'
+    : '<button class="btn btn-s' + (e.situacao === 'Meta atingida' ? ' btn-p' : '') + '" onclick="estrato(\'' + encodeURIComponent(e.estrato) + '\',\'Fechamento\')">Fechar</button>';
+  return '<h1>Painel do campo</h1><p class="sub">Universo: ' + k.N + ' deputados federais em exercício. Meta: ' + k.meta + ' entrevistas aprovadas. Abordagem em ponto de fluxo, com identificação do deputado após a entrevista.</p>' +
+    '<div class="grid kpis">' +
+    '<div class="card kpi"><div class="rot">Entrevistas aprovadas</div><div class="val">' + k.aprov + ' <small>/ ' + k.meta + '</small></div>' +
+    '<div class="barra"><i class="ap" style="width:' + (pctMeta * 100) + '%"></i><i class="pe" style="width:' + (pctPend * 100) + '%"></i></div>' +
+    '<div class="det">' + pct(k.aprov / k.meta) + ' da meta · ' + k.pend + ' em validação</div></div>' +
+    '<div class="card kpi"><div class="rot">Margem de erro atual</div><div class="val">' + (k.margem === null ? '–' : '±' + num(k.margem, 1) + ' <small>p.p.</small>') + '</div><div class="det">95% de confiança, n = ' + k.aprov + ', correção para população finita</div></div>' +
+    '<div class="card kpi"><div class="rot">Estratos fechados</div><div class="val">' + es.fechados + ' <small>/ ' + es.total + '</small></div><div class="det">' + es.abertos + ' aberto(s) · ' + es.alerta + ' em alerta · ' + es.meta + ' com meta atingida</div></div>' +
+    '<div class="card kpi"><div class="rot">Não validadas</div><div class="val">' + (k.nvFech + k.nvDup) + '</div><div class="det">' + k.nvFech + ' por estrato fechado · ' + k.nvDup + ' por duplicidade · ' + k.anul + ' anulada(s)</div></div>' +
+    '<div class="card kpi"><div class="rot">Fase</div><div class="val" style="font-size:20px">' + (dg.ativa ? 'Dirigida' : 'Ponto de fluxo') + '</div><div class="det">' +
+      (dg.ativa ? 'Desde ' + esc(dg.em) + ' · fluxo segue em paralelo' : (dg.habilitada ? 'Fase dirigida habilitada' : 'Fase dirigida a partir de ' + dg.pct + '% da meta (atual: ' + pct(dg.avanco) + ')')) + '</div></div>' +
+    '<div class="card kpi"><div class="rot">Valor apurado</div><div class="val" style="font-size:22px">' + brl(k.totalApurado) + '</div><div class="det">+ ' + brl(k.totalPotencial) + ' se pendentes forem aprovados</div></div>' +
+    '</div>' +
+    (D.avisos.length ? '<div class="card bloco"><h2>Pontos de atenção <span class="dir">' + D.avisos.length + '</span></h2><ul class="avisos">' +
+      D.avisos.slice(0, 12).map(a => '<li>' + badge(a.tipo === 'alerta' ? 'Atenção' : 'Info', a.tipo === 'alerta' ? 'b-alerta' : 'b-info') + ' ' + esc(a.txt) + '</li>').join('') +
+      (D.avisos.length > 12 ? '<li class="muted">e mais ' + (D.avisos.length - 12) + '</li>' : '') + '</ul></div>' : '') +
+    '<div class="card bloco"><h2>Cotas por estrato <span class="dir">entrevistas aprovadas em relação à meta · alerta a partir de ' + D.cfg.ALERTA_ESTRATO_PCT + '% · fechamento manual</span></h2><div class="tab-wrap"><table><thead><tr><th>Estrato</th><th class="n">N</th><th class="n">Meta</th><th class="n">Aprov.</th><th class="n">Valid.</th><th class="n">Faltam</th><th class="n">Não valid.</th><th style="width:16%">Progresso</th><th>Situação</th><th></th></tr></thead><tbody>' +
+    D.estratos.map(e => '<tr><td>' + esc(e.estrato) + '</td><td class="n">' + e.N + '</td><td class="n">' + e.cota + '</td><td class="n">' + e.aprov + (e.excedente ? ' <span class="muted peq">(+' + e.excedente + ')</span>' : '') + '</td><td class="n">' + e.pend + '</td><td class="n">' + e.faltam + '</td><td class="n">' + e.nvFech + '</td>' +
+      '<td><div class="barra" style="margin:0"><i class="ap" style="width:' + (e.cota ? Math.min(100, e.aprov / e.cota * 100) : 0) + '%"></i><i class="pe" style="width:' + (e.cota ? Math.min(100 - Math.min(100, e.aprov / e.cota * 100), e.pend / e.cota * 100) : 0) + '%"></i></div></td>' +
+      '<td>' + badge(e.situacao, SIT_EST[e.situacao]) + (e.fechado ? '<div class="peq muted">' + esc(e.fechadoEm) + ' · ' + esc(e.fechadoPor) + '</div>' : (e.situacao === 'Meta atingida' ? '<div class="peq muted">fechamento sugerido</div>' : '')) + '</td>' +
+      '<td><div class="acoes">' + acaoEst(e) + '</div></td></tr>').join('') +
+    '<tr class="tot"><td>Total</td><td class="n">' + k.N + '</td><td class="n">' + k.meta + '</td><td class="n">' + k.aprov + '</td><td class="n">' + k.pend + '</td><td class="n">' + D.estratos.reduce((s, e) => s + e.faltam, 0) + '</td><td class="n">' + k.nvFech + '</td><td></td><td></td><td></td></tr>' +
+    '</tbody></table></div><div class="legenda"><span><i style="background:var(--verde)"></i>Aprovadas</span><span><i style="background:#e3a63a"></i>Em validação</span><span>Não valid.: entrevistas iniciadas depois do fechamento do estrato</span><span>(+n): excedente sobre a meta</span></div></div>' +
+    '<div class="grid duas" style="grid-template-columns:1fr 1fr">' +
+    '<div class="card bloco"><h2>Região <span class="dir">monitoramento para ponderação</span></h2><table><thead><tr><th>Região</th><th class="n">Universo</th><th class="n">Amostra</th><th class="n">Desvio (p.p.)</th></tr></thead><tbody>' +
+    D.regioes.map(r => '<tr><td>' + esc(r.regiao) + '</td><td class="n">' + pct(r.pctU) + '</td><td class="n">' + pct(r.pctA) + '</td><td class="n">' + (r.desvio === null ? '–' : (r.desvio > 0 ? '+' : '') + num(r.desvio, 1)) + '</td></tr>').join('') +
+    '</tbody></table><p class="peq muted" style="margin:8px 0 0">Amostra: entrevistas aprovadas (n = ' + k.aprov + ').</p></div>' +
+    '<div class="card bloco"><h2>Resultado da eleição de 2026 <span class="dir">monitoramento, sem cota</span></h2>' +
+    (D.eleicaoSemDados ? '<p class="muted" style="margin:0">Coluna "Resultado eleição 2026" da aba UNIVERSO sem preenchimento. Valores aceitos: Reeleito, Não reeleito, Não candidato. O preenchimento é feito pela coordenação a partir de fonte primária.</p>'
+      : '<table><thead><tr><th>Condição</th><th class="n">Universo (N)</th><th class="n">Universo</th><th class="n">Amostra</th><th class="n">Desvio (p.p.)</th></tr></thead><tbody>' +
+        D.eleicao.map(r => '<tr><td>' + esc(r.cat) + '</td><td class="n">' + r.N + '</td><td class="n">' + pct(r.pctU) + '</td><td class="n">' + pct(r.pctA) + '</td><td class="n">' + (r.desvio === null ? '–' : (r.desvio > 0 ? '+' : '') + num(r.desvio, 1)) + '</td></tr>').join('') +
+        '</tbody></table><p class="peq muted" style="margin:8px 0 0">Amostra: entrevistas aprovadas (n = ' + k.aprov + '). Fonte da variável: coluna "Resultado eleição 2026" da aba UNIVERSO.</p>') + '</div>' +
+    '</div>' +
+    '<div class="card bloco"><h2>Boletim diário de campo</h2><div class="tab-wrap"><table><thead><tr><th>Data</th><th class="n">Aplicadores presentes</th><th class="n">Questionários</th><th class="n">Aprovados</th><th class="n">Não validados</th><th class="n">Anulados</th><th class="n">Tentativas (fase dirigida)</th><th class="n">Duração média (min)</th></tr></thead><tbody>' +
+    D.boletim.map(b => '<tr' + (b.hoje ? ' style="font-weight:600"' : '') + '><td>' + b.data + ' <span class="muted">' + diaSem(b.data) + '</span>' + (b.hoje ? ' ' + badge('hoje', 'b-info') : '') + '</td><td class="n">' + b.presentes + '</td><td class="n">' + b.enviadas + '</td><td class="n">' + b.aprovadas + '</td><td class="n">' + b.naoValid + '</td><td class="n">' + b.anuladas + '</td><td class="n">' + b.tentativas + '</td><td class="n">' + num(b.durMedia, 1) + '</td></tr>').join('') +
+    '</tbody></table></div><p class="peq muted" style="margin:8px 0 0">Na abordagem em ponto de fluxo não há registro de abordagens nem de recusas. Taxas de resposta e de recusa existem somente na fase dirigida.</p></div>';
+};
+
+// ---------- parlamentares (coordenação)
+VIEWS.parlamentares = () => {
+  const ests = [...new Set(D.parlamentares.map(p => p.estrato))].sort();
+  const preds = [...new Set(D.parlamentares.map(p => p.predio))].sort();
+  return '<h1>Parlamentares</h1><p class="sub">Situação de cada deputado, atualizada a cada questionário recebido. Vínculo entre deputado e entrevista: visível somente para a coordenação.</p>' +
+    '<div class="filtros"><input type="search" placeholder="Buscar nome, gabinete, partido ou UF" value="' + esc(F.busca) + '" oninput="setF(\'busca\',this.value)">' +
+    '<select onchange="setF(\'estrato\',this.value)"><option value="">Todos os estratos</option>' + ests.map(e => '<option' + (F.estrato === e ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select>' +
+    '<select onchange="setF(\'predio\',this.value)"><option value="">Todos os prédios</option>' + preds.map(e => '<option' + (F.predio === e ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select></div>' +
+    '<div class="chips" id="chips"></div><div class="card tab-wrap" id="lista"></div>';
+};
+
+function filtrarParl(base) {
+  const b = F.busca.trim().toLowerCase();
+  return base.filter(p => (!F.estrato || p.estrato === F.estrato) && (!F.predio || p.predio === F.predio) &&
+    (!b || (p.nome + ' ' + p.chave + ' ' + p.partido + ' ' + p.uf).toLowerCase().indexOf(b) >= 0));
+}
+LISTAS.parlamentares = () => {
+  const base = filtrarParl(D.parlamentares);
+  $('#chips').innerHTML = chipsOrient(base);
+  const lista = base.filter(p => !F.orient || p.orient === F.orient);
+  $('#lista').innerHTML = lista.length ? '<table><thead><tr><th>Gabinete</th><th>Parlamentar</th><th>Estrato</th><th>Eleição 2026</th><th>Situação</th><th>Entrevista</th></tr></thead><tbody>' +
+    lista.map(p => '<tr><td><b>' + esc(p.gab) + '</b> <span class="muted peq">' + esc(p.predio) + (p.andar ? ', ' + esc(p.andar) + 'º' : '') + '</span></td><td>' + parl(p) + '</td><td class="peq">' + esc(p.estrato) + '</td><td class="peq">' + (p.eleicao === 'Não preenchido' ? '<span class="muted">–</span>' : esc(p.eleicao)) + '</td><td>' + badge(p.orient) + '</td><td class="peq">' +
+      (p.entrevistaId ? esc(p.entrevistaId) : '<span class="muted">–</span>') + (p.naLista ? ' <span class="badge b-info">lista residual' + (p.atribCod ? ' · ' + esc(p.atribCod) : '') + '</span>' : '') + '</td></tr>').join('') +
+    '</tbody></table>' : '<div class="vazio">Nenhum parlamentar com esses filtros.</div>';
+};
+
+// ---------- validação
+VIEWS.validacao = () => {
+  const cont = s => D.entrevistas.filter(x => s === '' || (s === 'NV' ? x.nv : x.sit === s)).length;
+  return '<h1>Validação de questionários</h1><p class="sub">Somente questionários aprovados entram na amostra e no pagamento. Entrevistas de estrato fechado e duplicadas chegam como não validadas, com o motivo, e permanecem na base.</p>' +
+    '<div class="filtros"><div class="seg">' + [['Pendente', 'Pendentes'], ['Aprovada', 'Aprovadas'], ['NV', 'Não validadas'], ['Anulada', 'Anuladas'], ['', 'Todas']].map(s =>
+      '<button class="' + (F.sit === s[0] ? 'ativo' : '') + '" onclick="F.sit=\'' + s[0] + '\';render()">' + s[1] + ' (' + cont(s[0]) + ')</button>').join('') + '</div>' +
+    '<input type="search" placeholder="Buscar ID, parlamentar, aplicador" value="' + esc(F.busca) + '" oninput="setF(\'busca\',this.value)"></div><div id="lista"></div>';
+};
+
+LISTAS.validacao = () => {
+  const b = F.busca.trim().toLowerCase();
+  const l = D.entrevistas.filter(x => (F.sit === '' || (F.sit === 'NV' ? x.nv : x.sit === F.sit)) && (!b || (x.id + ' ' + x.nome + ' ' + x.aplic + ' ' + x.chave).toLowerCase().indexOf(b) >= 0));
+  $('#lista').innerHTML = l.length ? l.map(x => '<div class="card ent"><div><div class="l1">' + esc(x.id) + ' · enviado em ' + esc(x.enviado) + ' · início ' + esc(x.inicio || '–') + ' · ' + esc(x.aplic) + '</div>' +
+    '<div class="l2">' + parl(x) + ' <span class="muted peq">' + esc(x.chave) + '</span></div><div class="tags">' + badge(x.sit) +
+    '<span class="badge b-cota">' + esc(x.estrato) + '</span>' + (x.fase === 'Dirigida' ? '<span class="badge b-info">Fase dirigida</span>' : '') + '<span class="badge b-cota">Duração: ' + (x.dur === null ? '–' : x.dur + ' min') + '</span>' +
+    '<span class="badge ' + (x.quem === 'Assessor' ? 'b-alerta' : 'b-cota') + '">Respondeu: ' + esc(x.quem) + '</span>' +
+    (x.verificar ? '<span class="badge ' + (x.verifRes ? (x.verifRes === 'Confirmada' ? 'b-ok' : 'b-alerta') : 'b-info') + '">Verificação: ' + esc(x.verifRes || 'sorteada, pendente') + '</span>' : '') +
+    x.alertas.map(a => '<span class="badge b-alerta">' + esc(a) + '</span>').join('') + '</div>' +
+    (x.sit !== 'Pendente' ? '<div class="peq muted" style="margin-top:6px">' + esc(x.sit) + ' por ' + esc(x.validPor) + ' em ' + esc(x.validEm) + (x.motivo ? ' · Motivo: ' + esc(x.motivo) : '') + '</div>' : '') +
+    '</div><div class="acoes">' + (x.sit === 'Pendente'
+      ? '<button class="btn btn-ok btn-s" onclick="aprovar(\'' + esc(x.id) + '\')">Aprovar</button><button class="btn btn-x btn-s" onclick="modalAnular(\'' + esc(x.id) + '\')">Anular</button>'
+      : '<button class="btn btn-s" onclick="reabrir(\'' + esc(x.id) + '\')">' + (x.nv ? 'Rever' : 'Reabrir') + '</button>') + '</div></div>').join('')
+    : '<div class="card vazio">Nenhum questionário nesta situação.</div>';
+};
+
+function aprovar(id) {
+  const x = D.entrevistas.find(e => e.id === id);
+  if (x.verificar && !x.verifRes) return modalVerificacao(id);
+  if (x.alertas.length && !confirm('Esta entrevista tem alerta(s):\n- ' + x.alertas.join('\n- ') + '\n\nAprovar mesmo assim?')) return;
+  chamar('apiValidar', [id, 'Aprovada', '', ''], s => { D = JSON.parse(s); render(); toast(id + ' aprovada'); });
+}
+function reabrir(id) {
+  const x = D.entrevistas.find(e => e.id === id);
+  const msg = x.nv
+    ? id + ' está como "' + x.sit + '".\n' + (x.motivo || '') + '\n\nEnviar para a fila de validação mesmo assim? A decisão fica registrada no LOG.'
+    : 'Voltar ' + id + ' para pendente de validação?';
+  if (!confirm(msg)) return;
+  chamar('apiValidar', [id, 'Pendente', '', ''], s => { D = JSON.parse(s); render(); toast(id + ' enviada para validação'); });
+}
+
+const MOTIVOS = ['Duplicidade de gabinete', 'Respondida por pessoa não prevista no desenho', 'Não confirmada na verificação com o gabinete', 'Duração incompatível com o questionário', 'Inconsistência entre respostas', 'Outro'];
+function modalAnular(id) {
+  abrirModal('<h3>Anular ' + esc(id) + '</h3><p class="peq muted">A anulação fica registrada no LOG e o questionário sai da base válida e do pagamento.</p>' +
+    '<label>Motivo</label><select id="m_mot">' + MOTIVOS.map(m => '<option>' + m + '</option>').join('') + '</select>' +
+    '<label>Detalhamento</label><textarea id="m_det" placeholder="Descreva o que foi constatado"></textarea>' +
+    '<div class="rod"><button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn btn-x" onclick="confAnular(\'' + esc(id) + '\')">Anular questionário</button></div>');
+}
+function confAnular(id) {
+  const m = $('#m_mot').value, d = $('#m_det').value.trim();
+  if (m === 'Outro' && !d) return toast('Descreva o motivo.', true);
+  fecharModal();
+  chamar('apiValidar', [id, 'Anulada', m + (d ? ': ' + d : ''), ''], s => { D = JSON.parse(s); render(); toast(id + ' anulada'); });
+}
+function modalVerificacao(id) {
+  abrirModal('<h3>Verificação de ' + esc(id) + '</h3><p class="peq muted">Esta entrevista foi sorteada para verificação. Registre o contato com o gabinete: confirmação da realização, duração aproximada e quem respondeu.</p>' +
+    '<label>Resultado</label><select id="m_ver"><option>Confirmada</option><option>Não confirmada</option></select>' +
+    '<label>Observação (obrigatória se não confirmada)</label><textarea id="m_obs"></textarea>' +
+    '<div class="rod"><button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn btn-p" onclick="confVerif(\'' + esc(id) + '\')">Registrar e decidir</button></div>');
+}
+function confVerif(id) {
+  const v = $('#m_ver').value, o = $('#m_obs').value.trim();
+  if (v === 'Não confirmada' && !o) return toast('Descreva o resultado do contato.', true);
+  fecharModal();
+  const dec = v === 'Confirmada' ? 'Aprovada' : 'Anulada';
+  chamar('apiValidar', [id, dec, v === 'Confirmada' ? '' : 'Não confirmada na verificação com o gabinete: ' + o, v], s => { D = JSON.parse(s); render(); toast(id + (dec === 'Aprovada' ? ' verificada e aprovada' : ' anulada após verificação')); });
+}
+
+// ---------- presença
+VIEWS.presenca = () => {
+  const dias = [...new Set((D.cfg.DIAS || []).concat(Object.keys(D.presenca)).concat(Object.keys(D.atividade)))].filter(Boolean)
+    .sort((a, b) => a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join('')));
+  const ap = D.aplicadores.filter(a => a.ativo);
+  return '<h1>Controle de presença</h1><p class="sub">Clique na célula para marcar ou desmarcar a presença. Cada dia marcado vale ' + brl(D.cfg.VALOR_DIA) + '. O número abaixo indica tentativas e questionários registrados pelo aplicador no dia; borda laranja indica atividade sem presença lançada.</p>' +
+    '<div class="card tab-wrap"><table class="pres"><thead><tr><th>Aplicador</th>' + dias.map(d => '<th>' + d.slice(0, 5) + '<br><span class="muted peq">' + diaSem(d) + '</span></th>').join('') + '<th class="n">Dias</th><th class="n">Valor</th></tr></thead><tbody>' +
+    ap.map(a => {
+      let n = 0;
+      const cels = dias.map(d => {
+        const on = !!(D.presenca[d] && D.presenca[d][a.cod]); if (on) n++;
+        const at = D.atividade[d] && D.atividade[d][a.cod];
+        const tot = at ? at.env + at.tent : 0;
+        return '<td><button class="cel' + (on ? ' on' : '') + (!on && tot ? ' warn' : '') + '" title="' + esc(a.nome) + ' em ' + d + '" onclick="presenca(\'' + d + '\',\'' + a.cod + '\',' + !on + ')">✓</button><span class="ativ">' + (tot ? (at.env ? at.env + ' quest.' : '') + (at.env && at.tent ? ' · ' : '') + (at.tent ? at.tent + ' tent.' : '') : '') + '</span></td>';
+      }).join('');
+      return '<tr><td><b>' + esc(a.cod) + '</b> ' + esc(a.nome) + '</td>' + cels + '<td class="n">' + n + '</td><td class="n">' + brl(n * D.cfg.VALOR_DIA) + '</td></tr>';
+    }).join('') +
+    '<tr class="tot"><td>Presentes</td>' + dias.map(d => '<td>' + Object.keys(D.presenca[d] || {}).length + '</td>').join('') + '<td></td><td></td></tr></tbody></table></div>';
+};
+function presenca(d, cod, on) {
+  D.presenca[d] = D.presenca[d] || {}; if (on) D.presenca[d][cod] = true; else delete D.presenca[d][cod];
+  render();
+  chamar('apiPresenca', [d, cod, on], s => { D = JSON.parse(s); render(); });
+}
+
+// ---------- pagamentos
+VIEWS.pagamentos = () => {
+  const p = D.pagamentos, t = k => p.reduce((s, x) => s + x[k], 0);
+  const vqd = D.cfg.VALOR_QUESTIONARIO_DIRIGIDA;
+  return '<h1>Pagamentos</h1><p class="sub">Regra: ' + brl(D.cfg.VALOR_DIA) + ' por dia com presença lançada pela coordenação + ' + brl(D.cfg.VALOR_QUESTIONARIO) + ' por questionário aprovado' +
+    (vqd === null ? '' : ' (' + brl(vqd) + ' na fase dirigida, para deputado da lista do próprio aplicador)') + '. Questionários em validação aparecem como potencial. Não validados (estrato fechado ou duplicidade) e anulados não são pagos.</p>' +
+    '<div class="filtros"><button class="btn btn-p" onclick="fechar()">Registrar fechamento na planilha</button><span class="peq muted">Cria uma aba PAGTO_data com os valores deste momento.</span></div>' +
+    '<div class="card tab-wrap"><table><thead><tr><th>Aplicador</th><th class="n">Dias</th><th class="n">Valor dias</th><th class="n">Aprovados</th><th class="n">Na fase dirigida</th><th class="n">Valor questionários</th><th class="n">Total apurado</th><th class="n">Em validação</th><th class="n">Potencial</th><th class="n">Não validados</th><th class="n">Anulados</th></tr></thead><tbody>' +
+    p.map(x => '<tr><td><b>' + esc(x.cod) + '</b> ' + esc(x.nome) + '</td><td class="n">' + x.dias + '</td><td class="n">' + brl(x.vDias) + '</td><td class="n">' + x.aprov + '</td><td class="n">' + x.aprovDir + '</td><td class="n">' + brl(x.vQuest) + '</td><td class="n"><b>' + brl(x.total) + '</b></td><td class="n">' + x.pend + '</td><td class="n muted">' + brl(x.potencial) + '</td><td class="n">' + x.naoValid + '</td><td class="n">' + x.anul + '</td></tr>').join('') +
+    '<tr class="tot"><td>Total</td><td class="n">' + t('dias') + '</td><td class="n">' + brl(t('vDias')) + '</td><td class="n">' + t('aprov') + '</td><td class="n">' + t('aprovDir') + '</td><td class="n">' + brl(t('vQuest')) + '</td><td class="n">' + brl(t('total')) + '</td><td class="n">' + t('pend') + '</td><td class="n">' + brl(t('potencial')) + '</td><td class="n">' + t('naoValid') + '</td><td class="n">' + t('anul') + '</td></tr></tbody></table></div>';
+};
+
+function fechar() {
+  if (!confirm('Registrar o fechamento com os valores atuais?')) return;
+  chamar('apiFecharPagamento', [], url => { abrirModal('<h3>Fechamento registrado</h3><p>A aba foi criada na planilha de controle.</p><div class="rod"><button class="btn" onclick="fecharModal()">Fechar</button><a class="btn btn-p" target="_blank" href="' + esc(url) + '" onclick="fecharModal()">Abrir planilha</a></div>'); });
+}
+
+// ---------- aplicadores (coordenação)
+VIEWS.equipe = () => '<h1>Aplicadores</h1><p class="sub">Produtividade e contato. O link individual dá acesso ao botão do questionário, à lista de estratos fechados e aos resultados do próprio aplicador. Na fase dirigida, o núcleo vê também a própria lista nominal.</p>' +
+  '<div class="card tab-wrap"><table><thead><tr><th>Aplicador</th><th>Contato</th><th class="n">Dias</th><th class="n">Questionários</th><th class="n">Aprovados</th><th class="n">Não validados</th><th class="n">Anulados</th><th class="n">Duração média</th><th class="n">Lista dirigida</th><th class="n">Tentativas</th><th></th></tr></thead><tbody>' +
+  D.aplicadores.map(a => {
+    const wa = String(a.tel).replace(/\D/g, '');
+    return '<tr' + (a.ativo ? '' : ' class="muted"') + '><td><b>' + esc(a.cod) + '</b> ' + esc(a.nome) + (a.ativo ? '' : ' ' + badge('inativo', 'b-cota')) + '</td><td class="peq">' + (wa ? '<a target="_blank" href="https://wa.me/55' + wa + '">' + esc(a.tel) + '</a>' : '') + '<br><span class="muted">' + esc(a.email) + '</span></td>' +
+      '<td class="n">' + a.dias + '</td><td class="n">' + a.enviadas + '</td><td class="n">' + a.aprov + '</td><td class="n">' + a.naoValid + '</td><td class="n">' + a.anul + '</td><td class="n">' + (a.durMedia === null ? '–' : num(a.durMedia, 1) + ' min') + '</td><td class="n">' + (a.naLista || '–') + '</td><td class="n">' + (a.tentativas || '–') + '</td>' +
+      '<td><div class="acoes">' + (D.links && D.links[a.cod] ? '<button class="btn btn-s" onclick="verLink(\'' + a.cod + '\')">Link de acesso</button>' : '<span class="peq muted">gerar links em Manutenção</span>') + '</div></td></tr>';
+  }).join('') + '</tbody></table></div>' +
+  '<div class="card bloco" style="margin-top:16px"><h2>Manutenção</h2><div class="filtros" style="margin:0">' +
+  [['formulario', 'Atualizar listas do formulário'], ['links', 'Gerar links (novos aplicadores)'], ['fotos', 'Importar ID e foto dos deputados'], ['universo', 'Recalcular aba UNIVERSO'], ['instalar', 'Reinstalar estrutura'], ['revogar', 'Revogar todos os links']]
+    .map(a => '<button class="btn' + (a[0] === 'revogar' ? ' btn-x' : '') + '" onclick="admin(\'' + a[0] + '\',\'' + a[1] + '\')">' + a[1] + '</button>').join('') + '</div></div>' +
+  '<p class="peq muted" style="margin-top:12px">Inclusão ou desativação de aplicador: aba APLICADORES da planilha (coluna Ativo), seguida dos botões "Atualizar listas do formulário" e "Gerar links", em Manutenção.' + (D.formEdit ? ' <a target="_blank" href="' + esc(D.formEdit) + '">Editar formulário</a> · ' : ' ') + (D.planilha ? '<a target="_blank" href="' + esc(D.planilha) + '">Abrir planilha</a>' : '') + '</p>';
+
+function verLink(cod) {
+  const a = D.aplicadores.find(x => x.cod === cod);
+  abrirModal('<h3>Link de ' + esc(a.nome) + '</h3><p class="peq muted">Envie somente a esta pessoa. Para revogar, use o menu Controle de campo da planilha.</p>' +
+    '<input type="text" id="m_link" readonly value="' + esc(D.links[cod]) + '" onclick="this.select()">' +
+    '<div class="rod"><button class="btn" onclick="fecharModal()">Fechar</button><button class="btn btn-p" onclick="copiar()">Copiar</button></div>');
+}
+function copiar() {
+  const i = $('#m_link'); i.select();
+  const ok = () => toast('Link copiado');
+  if (navigator.clipboard) navigator.clipboard.writeText(i.value).then(ok, () => { document.execCommand('copy'); ok(); });
+  else { document.execCommand('copy'); ok(); }
+}
+
+function admin(acao, rotulo) {
+  if (!confirm(rotulo + '?' + (acao === 'revogar' ? '\n\nTodos os links atuais, inclusive o seu, deixam de funcionar. O novo link de coordenação aparece em seguida e fica na aba ACESSOS.' : ''))) return;
+  chamar('apiAdmin', [acao], msg => {
+    abrirModal('<h3>' + esc(rotulo) + '</h3><pre style="white-space:pre-wrap;font:inherit;max-height:50vh;overflow:auto">' + esc(msg || 'Concluído.') + '</pre><div class="rod"><button class="btn btn-p" onclick="fecharModal()">Fechar</button></div>');
+    if (acao !== 'revogar') carregar(true);
+  });
+}
+
+// ---------- tentativa (comum)
+function modalTentativa(chaveEnc) {
+  const chave = decodeURIComponent(chaveEnc);
+  const p = (PAPEL === 'coord' ? D.parlamentares : D.dirigida.minha).find(x => x.chave === chave);
+  const ap = PAPEL === 'coord' ? '<label>Aplicador</label><select id="m_ap">' + D.aplicadores.filter(a => a.ativo).map(a => '<option value="' + a.cod + '"' + (a.cod === p.atribCod ? ' selected' : '') + '>' + a.cod + ' · ' + esc(a.nome) + '</option>').join('') + '</select>' : '';
+  abrirModal('<h3>Registrar tentativa</h3><p style="margin:0">' + parl(p) + '<br><span class="peq muted">' + esc(p.chave) + ' · tentativa ' + (p.tentDir + 1) + ' de ' + D.cfg.MAX_TENTATIVAS + '</span></p>' + ap +
+    '<label>Resultado</label><select id="m_res"><option value="4">4 · Parlamentar ausente</option><option value="3">3 · Agendada</option><option value="5">5 · Recusa do gabinete</option><option value="6">6 · Recusa do parlamentar</option><option value="2">2 · Parcial (interrompida)</option><option value="8">8 · Inelegível</option><option value="9">9 · Outro</option></select>' +
+    '<label>Observação</label><textarea id="m_obs" placeholder="Para agendamento, informe data e hora. Para recusa, o motivo informado."></textarea>' +
+    '<p class="peq muted">Código 1 (completa) não é registrado aqui: o envio do questionário registra a entrevista.</p>' +
+    '<div class="rod"><button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn btn-p" onclick="confTentativa(\'' + chaveEnc + '\')">Registrar</button></div>');
+}
+
+function confTentativa(chaveEnc) {
+  const chave = decodeURIComponent(chaveEnc), res = $('#m_res').value, obs = $('#m_obs').value.trim();
+  if ((res === '3' || res === '9') && !obs) return toast(res === '3' ? 'Informe data e hora do agendamento.' : 'Descreva o resultado.', true);
+  const ap = $('#m_ap') ? $('#m_ap').value : '';
+  fecharModal();
+  chamar('apiTentativa', [chave, res, obs, ap], s => { D = JSON.parse(s); render(); toast('Tentativa registrada'); });
+}
+
+// ---------- aplicador: abordagem
+// ---------- aplicador: meus resultados
+VIEWS.meus = () => {
+  const pg = D.pagamento || {};
+  const dias = (D.diasPresente || []).sort((a, b) => a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join('')));
+  return '<h1>Meus resultados</h1><p class="sub">Valores apurados conforme presença lançada pela coordenação e questionários aprovados na validação. Questionário não validado (estrato fechado ou duplicidade) não é pago.</p>' +
+    '<div class="grid kpis"><div class="card kpi"><div class="rot">Dias trabalhados</div><div class="val">' + (pg.dias || 0) + '</div><div class="det">' + brl(pg.vDias) + '</div></div>' +
+    '<div class="card kpi"><div class="rot">Questionários aprovados</div><div class="val">' + (pg.aprov || 0) + '</div><div class="det">' + brl(pg.vQuest) + (pg.aprovDir ? ' · ' + pg.aprovDir + ' na fase dirigida' : '') + '</div></div>' +
+    '<div class="card kpi"><div class="rot">Em validação</div><div class="val">' + (pg.pend || 0) + '</div><div class="det">potencial ' + brl(pg.potencial) + '</div></div>' +
+    '<div class="card kpi"><div class="rot">Total apurado</div><div class="val" style="font-size:22px">' + brl(pg.total) + '</div><div class="det">' + (pg.naoValid || 0) + ' não validado(s) · ' + (pg.anul || 0) + ' anulado(s)</div></div></div>' +
+    '<div class="card bloco"><h2>Dias com presença</h2><p style="margin:0">' + (dias.length ? dias.map(d => '<span class="badge b-ok">' + d + ' ' + diaSem(d) + '</span>').join(' ') : '<span class="muted">Nenhum dia lançado.</span>') + '</p></div>' +
+    '<div class="card tab-wrap"><table><thead><tr><th>ID</th><th>Enviado em</th><th>Parlamentar</th><th class="n">Duração</th><th>Situação</th></tr></thead><tbody>' +
+    (D.entrevistas.length ? D.entrevistas.map(x => '<tr><td>' + esc(x.id) + '</td><td>' + esc(x.enviado) + '</td><td>' + parl(x) + '</td><td class="n">' + (x.dur === null ? '–' : x.dur + ' min') + '</td><td>' + badge(x.sit) + (x.fase === 'Dirigida' ? ' ' + badge('Fase dirigida', 'b-info') : '') + (x.motivo ? '<div class="peq muted">' + esc(x.motivo) + '</div>' : '') + '</td></tr>').join('')
+      : '<tr><td colspan="5" class="vazio">Nenhum questionário enviado.</td></tr>') + '</tbody></table></div>';
+};
+
+// ---------- modal
+const SEL = {};
+
+const SIT_EST = { 'Aberto': 'b-abordar', 'Em alerta': 'b-validacao', 'Meta atingida': 'b-ok', 'Fechado': 'b-limite' };
+
+function estrato(estEnc, acao) {
+  const nome = decodeURIComponent(estEnc), e = D.estratos.find(x => x.estrato === nome);
+  const fech = acao === 'Fechamento';
+  abrirModal('<h3>' + (fech ? 'Fechar' : 'Reabrir') + ' estrato</h3><p style="margin:0"><b>' + esc(nome) + '</b><br><span class="peq muted">' + e.aprov + ' de ' + e.cota + ' aprovadas · ' + e.pend + ' em validação</span></p>' +
+    '<p class="peq">' + (fech
+      ? 'Entrevistas deste estrato iniciadas a partir de agora ficam "Não validada: estrato fechado" e não entram no pagamento. As iniciadas antes seguem a validação normal. Os aplicadores passam a ver o estrato na lista de fechados.'
+      : 'Entrevistas iniciadas a partir de agora voltam a seguir a validação normal. As recebidas durante o fechamento continuam não validadas.') +
+    ' A ação fica registrada com data, hora e responsável.</p>' +
+    (fech && e.aprov < e.cota ? '<p class="peq"><span class="badge b-alerta">Atenção</span> A meta do estrato ainda não foi atingida.</p>' : '') +
+    '<div class="rod"><button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn btn-p" onclick="confEstrato(\'' + estEnc + '\',\'' + acao + '\')">' + (fech ? 'Fechar estrato' : 'Reabrir estrato') + '</button></div>');
+}
+
+function confEstrato(estEnc, acao) {
+  fecharModal();
+  chamar('apiEstrato', [decodeURIComponent(estEnc), acao], s => { D = JSON.parse(s); render(); toast(acao === 'Fechamento' ? 'Estrato fechado' : 'Estrato reaberto'); });
+}
+
+const ORDEM_ORIENT = ['Não entrevistado', 'Agendada', 'Em validação', 'Entrevistado', 'Estrato fechado', 'Limite de tentativas', 'Recusa', 'Inelegível'];
+
+function chipsOrient(base) {
+  const cont = {}; base.forEach(p => cont[p.orient] = (cont[p.orient] || 0) + 1);
+  return '<button class="chip' + (!F.orient ? ' ativo' : '') + '" onclick="setF(\'orient\',\'\')">Todos<b>' + base.length + '</b></button>' +
+    ORDEM_ORIENT.filter(o => cont[o]).map(o => '<button class="chip' + (F.orient === o ? ' ativo' : '') + '" onclick="setF(\'orient\',\'' + o + '\')">' + o + '<b>' + cont[o] + '</b></button>').join('');
+}
+
+VIEWS.dirigida = () => {
+  const dg = D.dirigida, k = D.kpis;
+  if (!dg.ativa) {
+    return '<h1>Fase final de busca dirigida</h1><p class="sub">Habilitada quando as entrevistas aprovadas atingem ' + dg.pct + '% da meta geral. Até lá, o campo é só em ponto de fluxo.</p>' +
+      '<div class="card bloco"><h2>Avanço da meta geral</h2><div class="val" style="font-size:24px;font-weight:700;color:var(--azul)">' + pct(dg.avanco) + ' <small class="muted" style="font-size:14px;font-weight:400">' + k.aprov + ' de ' + k.meta + ' aprovadas · mínimo de ' + dg.pct + '% (' + Math.ceil(k.meta * dg.pct / 100) + ')</small></div>' +
+      '<div class="barra"><i class="ap" style="width:' + Math.min(100, dg.avanco * 100) + '%"></i></div>' +
+      '<p style="margin:14px 0 0">Lista residual neste momento: <b>' + dg.residual + '</b> deputado(s) sem entrevista em estratos abertos com meta não atingida.</p>' +
+      '<p style="margin:12px 0 0">' + (dg.habilitada ? '<button class="btn btn-p" onclick="gerarResidual(true)">Gerar lista residual e iniciar a fase dirigida</button>' : '<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Gerar lista residual</button> <span class="peq muted">Disponível ao atingir ' + dg.pct + '% da meta.</span>') + '</p></div>';
+  }
+  const lista = dg.lista.map(c => D.parlamentares.find(p => p.chave === c)).filter(Boolean);
+  const ests = [...new Set(lista.map(p => p.estrato))].sort(), preds = [...new Set(lista.map(p => p.predio))].sort();
+  const nucleo = D.aplicadores.filter(a => a.naLista);
+  return '<h1>Fase final de busca dirigida</h1><p class="sub">Iniciada em ' + esc(dg.em) + ' por ' + esc(dg.por) + '. O ponto de fluxo segue em paralelo. Tentativas por deputado: máximo de ' + D.cfg.MAX_TENTATIVAS + '.</p>' +
+    '<div class="grid kpis"><div class="card kpi"><div class="rot">Lista residual</div><div class="val">' + lista.length + '</div><div class="det">' + dg.semAtrib + ' sem aplicador · ' + dg.novos + ' novo(s) fora da lista</div></div>' +
+    '<div class="card kpi"><div class="rot">Núcleo</div><div class="val">' + nucleo.length + '</div><div class="det">' + (nucleo.map(a => esc(a.cod) + ': ' + a.naLista).join(' · ') || 'Nenhum aplicador atribuído') + '</div></div>' +
+    '<div class="card kpi"><div class="rot">Taxa de resposta</div><div class="val">' + pct(dg.taxaResposta) + '</div><div class="det">Recusas: ' + pct(dg.taxaRecusa) + ' · base: ' + dg.abordados + ' deputado(s) da lista com tentativa</div></div></div>' +
+    '<div class="filtros"><input type="search" placeholder="Buscar nome ou gabinete" value="' + esc(F.busca) + '" oninput="setF(\'busca\',this.value)">' +
+    '<select onchange="setF(\'estrato\',this.value)"><option value="">Todos os estratos</option>' + ests.map(e => '<option' + (F.estrato === e ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select>' +
+    '<select onchange="setF(\'predio\',this.value)"><option value="">Todos os prédios</option>' + preds.map(e => '<option' + (F.predio === e ? ' selected' : '') + '>' + esc(e) + '</option>').join('') + '</select>' +
+    '<select onchange="setF(\'atrib\',this.value)"><option value="">Todos os aplicadores</option><option value="-"' + (F.atrib === '-' ? ' selected' : '') + '>Sem aplicador</option>' + nucleo.map(a => '<option value="' + a.cod + '"' + (F.atrib === a.cod ? ' selected' : '') + '>' + a.cod + ' · ' + esc(a.nome) + '</option>').join('') + '</select>' +
+    (dg.novos ? '<button class="btn" onclick="gerarResidual(false)">Atualizar lista (+' + dg.novos + ')</button>' : '') + '</div>' +
+    '<div class="chips" id="chips"></div>' +
+    '<div class="card bloco" style="padding:10px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span id="nsel" class="peq muted"></span>' +
+    '<select id="d_ap"><option value="">Atribuir a...</option>' + D.aplicadores.filter(a => a.ativo).map(a => '<option value="' + a.cod + '">' + a.cod + ' · ' + esc(a.nome) + (a.naLista ? ' (' + a.naLista + ')' : '') + '</option>').join('') + '</select>' +
+    '<button class="btn btn-p btn-s" onclick="atribuir(false)">Atribuir selecionados</button><button class="btn btn-s" onclick="atribuir(true)">Retirar atribuição</button></div>' +
+    '<div class="card tab-wrap" id="lista"></div>';
+};
+
+function listaDirigida() {
+  const base = filtrarParl(D.dirigida.lista.map(c => D.parlamentares.find(p => p.chave === c)).filter(Boolean))
+    .filter(p => !F.atrib || (F.atrib === '-' ? !p.atribCod : p.atribCod === F.atrib));
+  return { base: base, vis: base.filter(p => !F.orient || p.orient === F.orient) };
+}
+
+LISTAS.dirigida = () => {
+  if (!D.dirigida.ativa) return;
+  const l = listaDirigida();
+  $('#chips').innerHTML = chipsOrient(l.base);
+  const todos = l.vis.length && l.vis.every(p => SEL[p.chave]);
+  $('#nsel').textContent = Object.keys(SEL).length + ' selecionado(s)';
+  $('#lista').innerHTML = l.vis.length ? '<table><thead><tr><th style="width:32px"><input type="checkbox" ' + (todos ? 'checked' : '') + ' onchange="selTodos(this.checked)" title="Selecionar todos os exibidos"></th><th>Gabinete</th><th>Parlamentar</th><th>Estrato</th><th>Aplicador</th><th>Situação</th><th class="n">Tent.</th><th>Último registro</th><th></th></tr></thead><tbody>' +
+    l.vis.map(p => { const k = encodeURIComponent(p.chave), pode = p.orient === 'Não entrevistado' || p.orient === 'Agendada';
+      return '<tr><td><input type="checkbox" ' + (SEL[p.chave] ? 'checked' : '') + ' onchange="sel(\'' + k + '\',this.checked)"></td><td><b>' + esc(p.gab) + '</b> <span class="muted peq">' + esc(p.predio) + (p.andar ? ', ' + esc(p.andar) + 'º' : '') + '</span></td><td>' + parl(p) + '</td><td class="peq">' + esc(p.estrato) + '</td>' +
+        '<td class="peq">' + (p.atribCod ? '<b>' + esc(p.atribCod) + '</b> ' + esc(p.atribNome) : '<span class="badge b-alerta">sem aplicador</span>') + '</td><td>' + badge(p.orient) + '</td><td class="n">' + p.tentDir + ' / ' + D.cfg.MAX_TENTATIVAS + '</td>' +
+        '<td class="peq">' + (p.ultimaData ? esc(p.ultimaData) + ' · ' + esc(p.ultimaDesc) + (p.ultimaObs ? '<br><span class="muted">' + esc(p.ultimaObs) + '</span>' : '') : '<span class="muted">–</span>') + '</td>' +
+        '<td><div class="acoes">' + (pode ? '<button class="btn btn-s" onclick="modalTentativa(\'' + k + '\')">Registrar tentativa</button>' : '') + '</div></td></tr>'; }).join('') +
+    '</tbody></table>' : '<div class="vazio">Nenhum deputado com esses filtros.</div>';
+};
+
+function sel(k, on) { const c = decodeURIComponent(k); if (on) SEL[c] = true; else delete SEL[c]; $('#nsel').textContent = Object.keys(SEL).length + ' selecionado(s)'; }
+
+function selTodos(on) { listaDirigida().vis.forEach(p => { if (on) SEL[p.chave] = true; else delete SEL[p.chave]; }); LISTAS.dirigida(); }
+
+function atribuir(retirar) {
+  const chaves = Object.keys(SEL), cod = retirar ? '' : $('#d_ap').value;
+  if (!chaves.length) return toast('Selecione ao menos um deputado.', true);
+  if (!retirar && !cod) return toast('Escolha o aplicador.', true);
+  chamar('apiDirigidaAtribuir', [chaves, cod], s => { Object.keys(SEL).forEach(k => delete SEL[k]); D = JSON.parse(s); render(); toast(chaves.length + ' deputado(s) ' + (retirar ? 'sem atribuição' : 'atribuído(s) a ' + cod)); });
+}
+
+function gerarResidual(inicio) {
+  if (inicio && !confirm('Iniciar a fase dirigida com ' + D.dirigida.residual + ' deputado(s) na lista residual?\n\nA partir da distribuição, os aplicadores do núcleo passam a ver a própria lista nominal. O ponto de fluxo segue em paralelo.')) return;
+  chamar('apiDirigidaGerar', [], s => { D = JSON.parse(s); render(); toast(inicio ? 'Fase dirigida iniciada' : 'Lista residual atualizada'); });
+}
+
+VIEWS.campo = () => {
+  const a = D.aplicador || {}, pg = D.pagamento || {}, fe = D.estratosFechados || [];
+  const url = linkForm('', D.cod);
+  return '<div class="card saud"><div class="ola"><b>Olá, ' + esc(String(D.nome).split(' ')[0]) + '</b><div class="peq muted">Equipe: ' + D.kpis.aprov + ' de ' + D.kpis.meta + ' entrevistas aprovadas</div></div>' +
+    '<div class="mini"><div class="v">' + (a.enviadas || 0) + '</div><div class="r">enviados</div></div><div class="mini"><div class="v">' + (a.aprov || 0) + '</div><div class="r">aprovados</div></div><div class="mini"><div class="v" style="font-size:17px">' + brl(pg.total) + '</div><div class="r">apurado</div></div></div>' +
+    '<div class="card bloco" style="text-align:center;padding:22px 18px">' +
+    (url ? '<a class="btn btn-p btn-g" target="_blank" href="' + esc(url) + '">Aplicar questionário</a>' : '<span class="muted">Formulário não configurado. Avise a coordenação.</span>') +
+    '<p class="peq muted" style="margin:12px 0 0">Abra o questionário ao iniciar a entrevista e registre a hora de início. Ao final, pergunte o número do gabinete e digite no formulário. O formulário recusa número inexistente.</p></div>' +
+    '<div class="card bloco"><h2>Estratos fechados <span class="dir">' + fe.length + '</span></h2>' +
+    (fe.length ? '<ul class="avisos">' + fe.map(e => '<li><b>' + esc(e.estrato) + '</b> <span class="muted peq">desde ' + esc(e.em) + '</span></li>').join('') + '</ul>' +
+      '<p class="peq muted" style="margin:10px 0 0">Lista para orientação. Entrevista com deputado desses partidos ou federações, iniciada depois do fechamento, não é validada nem paga. O campo segue normalmente.</p>'
+      : '<p class="muted" style="margin:0">Nenhum estrato fechado. Todos os deputados podem ser entrevistados.</p>') + '</div>' +
+    (D.dirigida.ativa && D.dirigida.minha.length ? '<div class="card bloco"><h2>Fase dirigida</h2><p style="margin:0">Você tem ' + D.dirigida.minha.length + ' deputado(s) na sua lista nominal.</p><p style="margin:10px 0 0"><button class="btn btn-p" onclick="ir(\'minhalista\')">Abrir minha lista</button></p></div>' : '');
+};
+
+VIEWS.minhalista = () => {
+  const l = D.dirigida.minha.slice().sort((a, b) => {
+    const pa = a.orient === 'Agendada' ? 0 : a.orient === 'Não entrevistado' ? 1 : 2, pb = b.orient === 'Agendada' ? 0 : b.orient === 'Não entrevistado' ? 1 : 2;
+    return pa - pb || String(a.predio).localeCompare(String(b.predio)) || (+a.gab || 0) - (+b.gab || 0);
+  });
+  return '<h1>Minha lista</h1><p class="sub">Deputados atribuídos a você na fase dirigida. Máximo de ' + D.cfg.MAX_TENTATIVAS + ' tentativas por deputado. Registre cada visita sem entrevista.</p><div class="lista-ap">' +
+    l.map(p => {
+      const pode = p.orient === 'Não entrevistado' || p.orient === 'Agendada', k = encodeURIComponent(p.chave);
+      return '<div class="card cp' + (pode ? '' : ' fim') + '">' + (p.foto ? '<img class="foto" src="' + esc(p.foto) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<div class="foto"></div>') +
+        '<div class="info"><div class="nome">' + parl(p) + '</div><div class="peq" style="margin-top:2px">Gabinete ' + esc(p.gab) + ' · ' + esc(p.predio) + (p.andar ? ' · ' + esc(p.andar) + 'º andar' : '') + (p.sala && p.sala !== p.gab ? ' · sala ' + esc(p.sala) : '') + '</div>' +
+        '<div style="margin-top:6px">' + badge(p.orient) + ' <span class="peq muted">' + p.tentDir + ' de ' + D.cfg.MAX_TENTATIVAS + ' tentativa(s)' + (p.ultimaData ? ' · última: ' + esc(p.ultimaDesc) + ' ' + esc(p.ultimaData) : '') + '</span></div>' +
+        (p.ultimaObs && p.orient === 'Agendada' ? '<div class="peq" style="margin-top:4px">Agendamento: ' + esc(p.ultimaObs) + '</div>' : '') + '</div>' +
+        (pode ? '<div class="acoes"><a class="btn btn-p" target="_blank" href="' + esc(linkForm(p.gab, D.cod)) + '">Aplicar questionário</a><button class="btn" onclick="modalTentativa(\'' + k + '\')">Registrar tentativa</button></div>' : '') + '</div>';
+    }).join('') + '</div>';
+};
+
+function abrirModal(html) { $('#mbox').innerHTML = html; $('#modal').classList.add('aberto'); }
+function fecharModal() { $('#modal').classList.remove('aberto'); }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') fecharModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
+
+if (API_URL && !TOKEN) {
+  $('#main').innerHTML = '<div class="vazio"><h2>Link incompleto</h2><p>Abra o link completo enviado pela coordenação.</p></div>';
+} else {
+  carregar(true);
+}
+</script>
+</body>
+</html>
