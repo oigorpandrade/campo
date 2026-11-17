@@ -2,9 +2,17 @@
 <html lang="pt-BR">
 <head>
 <base target="_blank">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1b365d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Campo">
+<link rel="apple-touch-icon" href="icone-180.png">
+<link rel="icon" href="icone-192.png">
+<script>if(!/iphone|ipad|ipod/i.test(navigator.userAgent)&&!(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){var l=document.createElement('link');l.rel='manifest';l.href='manifest.webmanifest';document.head.appendChild(l);}</script>
 <title>Controle de campo</title>
 <meta charset="utf-8">
 <style>
@@ -130,6 +138,87 @@ textarea{width:100%;min-height:70px;resize:vertical}
 .btn-g{font-size:17px;padding:14px 28px;border-radius:10px;font-weight:600}
 .foto{width:64px;height:80px;border-radius:8px;object-fit:cover;background:var(--cinza-c);flex:none}
 .cp.fim{opacity:.6}
+
+/* v08: uso em celular */
+.bnav{display:none}
+.offline{display:none;background:var(--ambar-c);color:var(--ambar);text-align:center;font-size:13px;padding:7px 12px;position:sticky;top:58px;z-index:19}
+.offline.on{display:block}
+.aviso-cache{background:var(--azul-c);color:var(--azul2);border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+.menu-mais{display:grid;gap:6px;margin-top:12px}
+.menu-mais button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--borda);background:#fff;border-radius:10px;padding:13px 14px;font-size:15px;color:var(--txt)}
+.menu-mais button svg{width:22px;height:22px;fill:var(--teal);flex:none}
+.menu-mais button .pill{margin-left:auto;background:#e3a63a;color:#fff;border-radius:10px;font-size:11px;padding:1px 7px;font-weight:700}
+.menu-mais button.sair{color:var(--verm)} .menu-mais button.sair svg{fill:var(--verm)}
+.dias-pres{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}
+.dias-pres::-webkit-scrollbar{display:none}
+.dias-pres button{flex:none;border:1px solid var(--borda);background:#fff;border-radius:10px;padding:8px 12px;text-align:center;min-width:64px;color:var(--txt)}
+.dias-pres button small{display:block;font-size:11px;color:var(--cinza)}
+.dias-pres button.ativo{background:var(--azul);border-color:var(--azul);color:#fff}.dias-pres button.ativo small{color:#cfd9e8}
+.pres-lista .item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #eef1f4}
+.pres-lista .item:last-child{border-bottom:0}
+.pres-lista .item .nm{flex:1;min-width:0}.pres-lista .item .nm b{display:block;font-size:15px}
+.chave{position:relative;width:56px;height:32px;border-radius:20px;border:0;background:#d5dbe3;flex:none;transition:background .15s}
+.chave::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
+.chave.on{background:var(--verde)}.chave.on::after{left:27px}
+.instalar-card{display:flex;gap:12px;align-items:center}
+.instalar-card .txt{flex:1}
+@media(max-width:760px){
+  html,body{font-size:15px}
+  .topo{height:auto;min-height:52px;padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top));flex-wrap:nowrap;gap:10px}
+  .topo .nav{display:none}
+  .marca{font-size:16px}.marca small,#quem,#atual{display:none}
+  .usuario{margin-left:auto}.usuario button{padding:8px 14px;font-size:14px;border-radius:8px}
+  .carregando{top:0}
+  .offline{top:52px}
+  main{padding:14px 12px calc(86px + env(safe-area-inset-bottom))}
+  h1{font-size:19px}
+  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--borda);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 12px rgba(16,24,40,.07)}
+  .bnav button{flex:1;border:0;background:none;padding:7px 2px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--cinza);position:relative;min-height:58px;-webkit-tap-highlight-color:transparent}
+  .bnav button svg{width:24px;height:24px;fill:currentColor}
+  .bnav button.ativo{color:var(--teal);font-weight:700}
+  .bnav button.ativo::before{content:'';position:absolute;top:0;left:25%;right:25%;height:3px;border-radius:0 0 3px 3px;background:var(--teal)}
+  .bnav .pill{position:absolute;top:3px;left:50%;margin-left:4px;background:#e3a63a;color:#fff;border-radius:10px;font-size:10px;padding:0 5px;font-weight:700;line-height:16px}
+  input[type=search],input[type=text],select,textarea{font-size:16px;padding:10px 12px}
+  .btn{padding:10px 14px;font-size:14px;min-height:44px;justify-content:center}
+  .btn-s{padding:8px 12px;font-size:13px;min-height:40px}
+  .btn-g{width:100%;padding:16px 20px}
+  .filtros>*{flex:1 1 100%;min-width:0;max-width:100%}
+  .filtros select{width:100%}
+  .filtros:has(> input[type=search]:only-child){position:sticky;top:var(--topo-h,52px);z-index:15;background:var(--fundo);padding:8px 0;margin:-8px 0 8px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -12px 12px;padding:0 12px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;padding:8px 13px;font-size:13px}
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi{padding:12px}.kpi .val{font-size:22px}.kpi .rot{font-size:11px}
+  .grid.duas{grid-template-columns:1fr !important}
+  .bloco{padding:14px}
+  .bloco h2{flex-wrap:wrap;gap:4px 10px}.bloco h2 .dir{margin-left:0;flex-basis:100%}
+  .tab-wrap{overflow:visible}
+  table.rt,table.rt tbody,table.rt tr,table.rt td{display:block;width:100%}
+  table.rt thead{display:none}
+  table.rt tr{background:#fff;border-bottom:1px solid var(--borda);padding:10px 12px}
+  table.rt tr:last-child{border-bottom:0}
+  table.rt td{border:0;padding:4px 0;display:block;text-align:right;min-height:26px;overflow:hidden}
+  table.rt td::before{content:attr(data-l);float:left;color:var(--cinza);font-size:12px;text-align:left;max-width:48%;margin-right:12px;line-height:20px}
+  table.rt td:first-child{font-size:15px;text-align:left;display:block;padding-bottom:4px}
+  table.rt td:first-child::before,table.rt td[data-l=""]::before{display:none}
+  table.rt td:empty{display:none}
+  table.rt td .acoes{display:inline-flex;justify-content:flex-end;flex-wrap:wrap}
+  table.rt td .barra{display:inline-flex;width:55%;vertical-align:middle;margin:0 !important}
+  table.rt tr:hover td{background:none}
+  table.rt tr.tot{background:#fafbfc}
+  table.rt td.vazio{display:block;text-align:center}
+  .ent{grid-template-columns:1fr;padding:14px}
+  .ent .acoes{justify-content:stretch}.ent .acoes .btn{flex:1}
+  .cp{align-items:flex-start}
+  .modal{align-items:flex-end;padding:0}
+  .modal .box{max-width:none;border-radius:16px 16px 0 0;max-height:90vh;overflow:auto;padding:18px 16px calc(16px + env(safe-area-inset-bottom));animation:sobe .18s ease-out}
+  .modal .rod{position:sticky;bottom:calc(-16px - env(safe-area-inset-bottom));background:#fff;padding:10px 0 4px;margin-bottom:0}
+  .modal .rod .btn{flex:1}
+  .toast{bottom:calc(78px + env(safe-area-inset-bottom))}
+  .saud{padding:14px}
+}
+@keyframes sobe{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -139,7 +228,9 @@ textarea{width:100%;min-height:70px;resize:vertical}
   <div class="usuario"><span id="quem"></span><button onclick="carregar()" title="Atualizar">Atualizar</button><div class="peq" id="atual"></div></div>
 </header>
 <div class="carregando" id="car"></div>
+<div class="offline" id="offline">Sem conexão com a internet. Os dados na tela podem estar desatualizados.</div>
 <main id="main"><div class="vazio">Carregando dados do campo...<br><span class="peq">Na primeira abertura pode levar até 20 segundos.</span></div></main>
+<nav class="bnav" id="bnav"></nav>
 <div class="modal" id="modal"><div class="box" id="mbox"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -147,7 +238,14 @@ textarea{width:100%;min-height:70px;resize:vertical}
 <script>
 // API_URL é definida só na página hospedada fora do Google; no Apps Script fica vazia e as chamadas usam google.script.run.
 const API_URL = window.API_URL || '';
-const TOKEN = API_URL ? ((location.hash.match(/t=([0-9a-f]+)/i) || [])[1] || '') : '';
+const TOKEN = API_URL ? lerToken() : '';
+// v08: o código de acesso fica salvo no aparelho, para abrir pelo ícone da tela inicial sem o link.
+function lerToken() {
+  const h = (location.hash.match(/t=([0-9a-f]+)/i) || [])[1] || '';
+  try { if (h) { localStorage.setItem('cc_t', h); return h; } return localStorage.getItem('cc_t') || ''; } catch (e) { return h; }
+}
+function guardar(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } }
+function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 let PAPEL = API_URL ? '' : '';
 let NOME = API_URL ? '' : '';
 let D = null;
@@ -188,6 +286,7 @@ function chamar(fn, args, ok) {
   const erro = e => {
     carregando(false);
     const msg = (e && e.message) || String(e);
+    if (/não autorizado|revogado/i.test(msg)) { guardar('cc_t', null); guardar('cc_d', null); }
     if (!D) $('#main').innerHTML = '<div class="vazio"><p>' + esc(msg) + '</p><p><button class="btn btn-p" onclick="$(\'#main\').innerHTML=\'<div class=vazio>Carregando dados do campo...</div>\';carregar(true)">Tentar de novo</button></p></div>';
     else toast(msg, true);
   };
@@ -210,9 +309,15 @@ function chamar(fn, args, ok) {
 }
 
 function carregar(silencioso) {
-  chamar('apiDados', [], s => { D = JSON.parse(s); PAPEL = D.papel; NOME = D.nome; render(); if (!silencioso) toast('Dados atualizados'); });
+  chamar('apiDados', [], s => {
+    D = JSON.parse(s); PAPEL = D.papel; NOME = D.nome; DOCACHE = false;
+    // v08: só a tela do aplicador fica salva no aparelho; a da coordenação tem o vínculo entre deputado e entrevista.
+    guardar('cc_d', PAPEL === 'aplic' && API_URL ? JSON.stringify({ t: TOKEN, s: s }) : null);
+    render(); if (!silencioso) toast('Dados atualizados');
+  });
 }
-setInterval(() => { if (!$('#modal').classList.contains('aberto') && document.visibilityState === 'visible') carregar(true); }, 90000);
+setInterval(() => { if (!$('#modal').classList.contains('aberto') && document.visibilityState === 'visible') carregar(true); }, 60000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && D) carregar(true); });
 
 function linkForm(gab, codAplic) {
   const pf = D.prefill || {};
@@ -234,15 +339,94 @@ function render() {
   const minha = PAPEL === 'aplic' && D.dirigida.ativa && D.dirigida.minha.length;
   const itens = PAPEL === 'coord'
     ? [['painel', 'Painel'], ['validacao', 'Validação', D.kpis.pend], ['dirigida', 'Fase dirigida', D.dirigida.ativa ? D.dirigida.semAtrib : 0], ['parlamentares', 'Parlamentares'], ['presenca', 'Presença'], ['pagamentos', 'Pagamentos'], ['equipe', 'Aplicadores']]
-    : [['campo', 'Campo']].concat(minha ? [['minhalista', 'Minha lista', D.dirigida.minha.filter(p => p.orient === 'Não entrevistado' || p.orient === 'Agendada').length]] : []).concat([['meus', 'Meus resultados']]);
+    : [['campo', 'Campo'], ['deputados', 'Deputados']].concat(minha ? [['minhalista', 'Minha lista', D.dirigida.minha.filter(p => p.orient === 'Não entrevistado' || p.orient === 'Agendada').length]] : []).concat([['meus', 'Meus resultados']]);
   if (!VIEWS[VIEW] || (VIEW === 'minhalista' && !minha)) VIEW = itens[0][0];
+  montarBnav(itens);
   $('#nav').innerHTML = itens.map(i => '<button class="' + (VIEW === i[0] ? 'ativo' : '') + '" onclick="ir(\'' + i[0] + '\')">' + i[1] +
     (i[2] ? '<span class="pill">' + i[2] + '</span>' : '') + '</button>').join('');
-  $('#main').innerHTML = VIEWS[VIEW]();
+  const foco = document.activeElement;
+  if (render._v === VIEW && LISTAS[VIEW] && foco && foco.tagName === 'INPUT' && $('#main').contains(foco)) { LISTAS[VIEW](); return; }
+  render._v = VIEW;
+  $('#main').innerHTML = (DOCACHE ? '<div class="aviso-cache">Mostrando os dados salvos de ' + esc(D.atualizado) + '. Atualizando...</div>' : '') + VIEWS[VIEW]();
   if (LISTAS[VIEW]) LISTAS[VIEW]();
+  rotular();
 }
 
-function ir(v) { VIEW = v; F.busca = ''; F.orient = ''; F.estrato = ''; F.predio = ''; F.atrib = ''; render(); window.scrollTo(0, 0); }
+// ---------- v08: celular
+const MOVEL = window.matchMedia('(max-width:760px)');
+let DOCACHE = false, PROMPT_INST = null;
+const ICO = {
+  painel: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',
+  validacao: 'M12 2a10 10 0 100 20 10 10 0 000-20zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
+  parlamentares: 'M16 11a3 3 0 100-6 3 3 0 000 6zm-8 0a3 3 0 100-6 3 3 0 000 6zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+  presenca: 'M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 16H5V9h14v11zm-8.5-2.5L7 14l1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4-6 6z',
+  mais: 'M6 10a2 2 0 100 4 2 2 0 000-4zm6 0a2 2 0 100 4 2 2 0 000-4zm6 0a2 2 0 100 4 2 2 0 000-4z',
+  campo: 'M19 3h-4.18A3 3 0 0012 1a3 3 0 00-2.82 2H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 0a1 1 0 110 2 1 1 0 010-2zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z',
+  minhalista: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z',
+  meus: 'M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z',
+  dirigida: 'M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm0-14a6 6 0 100 12 6 6 0 000-12zm0 10a4 4 0 110-8 4 4 0 010 8zm0-6a2 2 0 100 4 2 2 0 000-4z',
+  pagamentos: 'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z',
+  equipe: 'M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
+  atualizar: 'M17.65 6.35A7.96 7.96 0 0012 4a8 8 0 108 8h-2a6 6 0 11-1.76-4.24L13 11h7V4l-2.35 2.35z',
+  instalar: 'M17 1H7a2 2 0 00-2 2v18a2 2 0 002 2h10a2 2 0 002-2V3a2 2 0 00-2-2zm0 18H7V5h10v14zm-1-6h-3V8h-2v5H8l4 4 4-4z',
+  sair: 'M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z'
+};
+const svg = k => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + (ICO[k] || ICO.mais) + '"/></svg>';
+const MAIS_COORD = ['dirigida', 'pagamentos', 'equipe'];
+
+function montarBnav(itens) {
+  const curto = { validacao: 'Validação', parlamentares: 'Deputados', minhalista: 'Minha lista', meus: 'Resultados', painel: 'Painel', presenca: 'Presença', campo: 'Campo', deputados: 'Deputados' };
+  const base = itens.filter(i => PAPEL !== 'coord' || MAIS_COORD.indexOf(i[0]) < 0);
+  const pillMais = PAPEL === 'coord' ? itens.filter(i => MAIS_COORD.indexOf(i[0]) >= 0).reduce((s, i) => s + (+i[2] || 0), 0) : 0;
+  $('#bnav').innerHTML = base.map(i => '<button class="' + (VIEW === i[0] ? 'ativo' : '') + '" onclick="ir(\'' + i[0] + '\')">' + svg(i[0] === 'deputados' ? 'parlamentares' : i[0]) +
+    '<span>' + (curto[i[0]] || i[1]) + '</span>' + (i[2] ? '<span class="pill">' + i[2] + '</span>' : '') + '</button>').join('') +
+    '<button class="' + (MAIS_COORD.indexOf(VIEW) >= 0 && PAPEL === 'coord' ? 'ativo' : '') + '" onclick="menuMais()">' + svg('mais') + '<span>Mais</span>' + (pillMais ? '<span class="pill">' + pillMais + '</span>' : '') + '</button>';
+}
+
+function menuMais() {
+  const extra = PAPEL === 'coord' ? [['dirigida', 'Fase dirigida', D.dirigida.ativa ? D.dirigida.semAtrib : 0], ['pagamentos', 'Pagamentos'], ['equipe', 'Aplicadores e manutenção']] : [];
+  abrirModal('<h3>Mais opções</h3><p class="peq muted" style="margin:0">' + esc(D.nome) + (PAPEL === 'coord' ? ' · coordenação' : ' · aplicador') + ' · atualizado em ' + esc(D.atualizado) + '</p><div class="menu-mais">' +
+    extra.map(i => '<button onclick="fecharModal();ir(\'' + i[0] + '\')">' + svg(i[0]) + i[1] + (i[2] ? '<span class="pill">' + i[2] + '</span>' : '') + '</button>').join('') +
+    '<button onclick="fecharModal();carregar()">' + svg('atualizar') + 'Atualizar dados</button>' +
+    (API_URL && !emApp() ? '<button onclick="fecharModal();instalar()">' + svg('instalar') + 'Instalar na tela inicial</button>' : '') +
+    (API_URL ? '<button class="sair" onclick="sair()">' + svg('sair') + 'Sair deste aparelho</button>' : '') +
+    '</div><div class="rod"><button class="btn" onclick="fecharModal()">Fechar</button></div>');
+}
+
+function emApp() { return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; }
+const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); PROMPT_INST = e; });
+function instalar() {
+  if (PROMPT_INST) { PROMPT_INST.prompt(); PROMPT_INST.userChoice.then(() => { PROMPT_INST = null; }); return; }
+  abrirModal('<h3>Instalar na tela inicial</h3>' + (IOS
+    ? '<ol style="padding-left:20px;margin:10px 0 0;line-height:1.7"><li>Abra este link no <b>Safari</b>.</li><li>Toque no botão <b>Compartilhar</b> (quadrado com seta para cima).</li><li>Toque em <b>Adicionar à Tela de Início</b> e depois em <b>Adicionar</b>.</li></ol>'
+    : '<ol style="padding-left:20px;margin:10px 0 0;line-height:1.7"><li>Abra este link no <b>Chrome</b>.</li><li>Toque no menu <b>⋮</b>, no canto superior direito.</li><li>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</li></ol>') +
+    '<p class="peq muted">O ícone abre o sistema direto, sem precisar do link. Seu acesso fica salvo neste aparelho.</p><div class="rod"><button class="btn btn-p" onclick="fecharModal()">Entendi</button></div>');
+}
+function sair() {
+  if (!confirm('Sair deste aparelho? Para entrar de novo, abra o link enviado pela coordenação.')) return;
+  guardar('cc_t', null); guardar('cc_d', null);
+  location.replace(location.pathname);
+}
+
+// tabelas viram cartões no celular: cada célula recebe o título da coluna
+function rotular() {
+  document.querySelectorAll('#main table:not(.pres)').forEach(t => {
+    const th = [...t.querySelectorAll('thead th')].map(x => x.textContent.trim());
+    if (!th.length) return;
+    t.classList.add('rt');
+    t.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => { if (!td.hasAttribute('data-l')) td.setAttribute('data-l', td.colSpan > 1 ? '' : (th[i] || '')); }));
+  });
+}
+new MutationObserver(() => { clearTimeout(rotular._t); rotular._t = setTimeout(rotular, 0); }).observe($('#main'), { childList: true, subtree: true });
+function medirTopo() { document.documentElement.style.setProperty('--topo-h', ($('.topo').offsetHeight || 52) + 'px'); }
+window.addEventListener('resize', medirTopo);
+(MOVEL.addEventListener ? MOVEL.addEventListener('change', () => { medirTopo(); render(); }) : MOVEL.addListener(() => { medirTopo(); render(); }));
+function conexao() { $('#offline').classList.toggle('on', !navigator.onLine); }
+window.addEventListener('online', () => { conexao(); if (D) carregar(true); });
+window.addEventListener('offline', conexao);
+
+function ir(v) { VIEW = v; F.busca = ''; F.orient = ''; F.estrato = ''; F.predio = ''; F.atrib = ''; F.maisDep = 0; render._v = ''; render(); window.scrollTo(0, 0); }
 
 function setF(k, v) { F[k] = v; if (LISTAS[VIEW]) LISTAS[VIEW](); else render(); }
 
@@ -386,7 +570,27 @@ function confVerif(id) {
 }
 
 // ---------- presença
-VIEWS.presenca = () => {
+VIEWS.presenca = () => MOVEL.matches ? presencaDia() : presencaTabela();
+function diasPresenca() {
+  return [...new Set((D.cfg.DIAS || []).concat(Object.keys(D.presenca)).concat(Object.keys(D.atividade)))].filter(Boolean)
+    .sort((a, b) => a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join('')));
+}
+function presencaDia() {
+  const dias = diasPresenca(), hoje = String(D.atualizado || '').slice(0, 10);
+  if (!F.diaPres || dias.indexOf(F.diaPres) < 0) F.diaPres = dias.indexOf(hoje) >= 0 ? hoje : (dias.filter(d => d.split('/').reverse().join('') <= hoje.split('/').reverse().join('')).pop() || dias[0] || hoje);
+  const d = F.diaPres, ap = D.aplicadores.filter(a => a.ativo), pres = D.presenca[d] || {};
+  const n = ap.filter(a => pres[a.cod]).length;
+  return '<h1>Presença</h1><p class="sub">Escolha o dia e toque na chave para marcar ou desmarcar. Cada dia marcado vale ' + brl(D.cfg.VALOR_DIA) + '.</p>' +
+    '<div class="dias-pres">' + dias.map(x => '<button class="' + (x === d ? 'ativo' : '') + '" onclick="F.diaPres=\'' + x + '\';render()">' + x.slice(0, 5) + '<small>' + diaSem(x) + (x === hoje ? ' · hoje' : '') + '</small></button>').join('') + '</div>' +
+    '<div class="card"><div class="pres-lista">' + ap.map(a => {
+      const on = !!pres[a.cod], at = D.atividade[d] && D.atividade[d][a.cod], tot = at ? at.env + at.tent : 0;
+      return '<div class="item"><div class="nm"><b>' + esc(a.nome) + '</b><span class="peq muted">' + esc(a.cod) + (tot ? ' · ' + (at.env ? at.env + ' quest.' : '') + (at.env && at.tent ? ' · ' : '') + (at.tent ? at.tent + ' tent.' : '') : '') + '</span>' +
+        (!on && tot ? ' ' + badge('atividade sem presença', 'b-alerta') : '') + '</div>' +
+        '<button class="chave' + (on ? ' on' : '') + '" aria-label="Presença de ' + esc(a.nome) + '" onclick="presenca(\'' + d + '\',\'' + a.cod + '\',' + !on + ')"></button></div>';
+    }).join('') + '</div></div>' +
+    '<p class="peq muted" style="margin-top:10px">' + n + ' de ' + ap.length + ' presentes em ' + d + ' · ' + brl(n * D.cfg.VALOR_DIA) + ' no dia.</p>';
+}
+function presencaTabela() {
   const dias = [...new Set((D.cfg.DIAS || []).concat(Object.keys(D.presenca)).concat(Object.keys(D.atividade)))].filter(Boolean)
     .sort((a, b) => a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join('')));
   const ap = D.aplicadores.filter(a => a.ativo);
@@ -605,7 +809,38 @@ VIEWS.campo = () => {
     (fe.length ? '<ul class="avisos">' + fe.map(e => '<li><b>' + esc(e.estrato) + '</b> <span class="muted peq">desde ' + esc(e.em) + '</span></li>').join('') + '</ul>' +
       '<p class="peq muted" style="margin:10px 0 0">Lista para orientação. Entrevista com deputado desses partidos ou federações, iniciada depois do fechamento, não é validada nem paga. O campo segue normalmente.</p>'
       : '<p class="muted" style="margin:0">Nenhum estrato fechado. Todos os deputados podem ser entrevistados.</p>') + '</div>' +
+    (API_URL && !emApp() && MOVEL.matches ? '<div class="card bloco instalar-card"><div class="txt"><b>Use como aplicativo</b><div class="peq muted">Instale na tela inicial e abra sem o link.</div></div><button class="btn btn-p" onclick="instalar()">Instalar</button></div>' : '') +
     (D.dirigida.ativa && D.dirigida.minha.length ? '<div class="card bloco"><h2>Fase dirigida</h2><p style="margin:0">Você tem ' + D.dirigida.minha.length + ' deputado(s) na sua lista nominal.</p><p style="margin:10px 0 0"><button class="btn btn-p" onclick="ir(\'minhalista\')">Abrir minha lista</button></p></div>' : '');
+};
+
+// ---------- busca de deputados (aplicador, v07)
+const SDEP = { D: ['Disponível', 'b-ok'], R: ['Já respondeu', 'b-validacao'], F: ['Estrato fechado', 'b-nv'], I: ['Inelegível', 'b-cota'] };
+const semAcento = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+VIEWS.deputados = () => {
+  const l = D.deputados || [], c = { D: 0, R: 0, F: 0, I: 0 };
+  l.forEach(p => c[p.s]++);
+  return '<h1>Deputados</h1><p class="sub">Situação de cada deputado, atualizada a cada minuto. Atualizado em ' + esc(D.atualizado) + '.</p>' +
+    '<div class="filtros"><input type="search" id="bdep" placeholder="Nome, gabinete, partido ou UF" value="' + esc(F.busca) + '" oninput="setF(\'busca\',this.value)" autocomplete="off"></div>' +
+    '<div class="chips"><button class="chip' + (!F.orient ? ' ativo' : '') + '" onclick="F.orient=\'\';render()">Todos<b>' + l.length + '</b></button>' +
+    ['D', 'R', 'F', 'I'].filter(k => c[k]).map(k => '<button class="chip' + (F.orient === k ? ' ativo' : '') + '" onclick="F.orient=\'' + k + '\';render()">' + SDEP[k][0] + '<b>' + c[k] + '</b></button>').join('') + '</div>' +
+    '<div class="lista-ap" id="ldep"></div>';
+};
+LISTAS.deputados = () => {
+  const b = semAcento(F.busca.trim()), ord = { D: 0, R: 1, F: 2, I: 3 };
+  const l = (D.deputados || []).filter(p => (!F.orient || p.s === F.orient) &&
+    (!b || semAcento(p.n + ' ' + p.g + ' ' + p.p + ' ' + p.u + ' ' + p.p + '/' + p.u).indexOf(b) >= 0))
+    .sort((x, y) => (b ? 0 : ord[x.s] - ord[y.s]) || semAcento(x.n).localeCompare(semAcento(y.n)));
+  const MAX = 80, mostra = l.slice(0, F.maisDep ? l.length : MAX);
+  $('#ldep').innerHTML = l.length ? mostra.map(p => {
+    const st = SDEP[p.s] || SDEP.D, url = p.s === 'D' ? linkForm(p.g, D.cod) : '';
+    return '<div class="card cp' + (p.s === 'D' ? '' : ' fim') + '">' + (p.f ? '<img class="foto" src="' + esc(p.f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<div class="foto"></div>') +
+      '<div class="info"><div class="nome">' + esc(p.n) + ' <span class="muted">(' + esc(p.p) + '/' + esc(p.u) + ')</span></div>' +
+      '<div class="peq" style="margin-top:2px">Gabinete <b>' + esc(p.g) + '</b>' + (p.pr ? ' · ' + esc(p.pr) : '') + (p.a ? ' · ' + esc(p.a) + 'º andar' : '') + '</div>' +
+      '<div style="margin-top:6px">' + badge(st[0], st[1]) + (p.s === 'F' ? ' <span class="peq muted">' + esc(p.e) + '</span>' : '') + '</div>' +
+      (url ? '<div style="margin-top:8px"><a class="btn btn-s" target="_blank" href="' + esc(url) + '">Questionário com este gabinete</a></div>' : '') +
+      '</div></div>';
+  }).join('') + (l.length > mostra.length ? '<p style="text-align:center"><button class="btn" onclick="F.maisDep=1;LISTAS.deputados()">Mostrar todos (' + l.length + ')</button></p>' : '')
+    : '<div class="vazio">Nenhum deputado encontrado.</div>';
 };
 
 VIEWS.minhalista = () => {
@@ -632,6 +867,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(
 if (API_URL && !TOKEN) {
   $('#main').innerHTML = '<div class="vazio"><h2>Link incompleto</h2><p>Abra o link completo enviado pela coordenação.</p></div>';
 } else {
+  medirTopo(); conexao();
+  const c = API_URL ? ler('cc_d') : null;
+  if (c) { try { const o = JSON.parse(c); if (o.t === TOKEN) { D = JSON.parse(o.s); PAPEL = D.papel; NOME = D.nome; DOCACHE = true; render(); } } catch (e) { } }
   carregar(true);
 }
 </script>
