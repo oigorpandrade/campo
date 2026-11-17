@@ -13,6 +13,10 @@
 <link rel="apple-touch-icon" href="icone-180.png">
 <link rel="icon" href="icone-192.png">
 <script>if(!/iphone|ipad|ipod/i.test(navigator.userAgent)&&!(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)){var l=document.createElement('link');l.rel='manifest';l.href='manifest.webmanifest';document.head.appendChild(l);}</script>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<link rel="preconnect" href="https://docs.google.com">
+<link rel="dns-prefetch" href="https://www.camara.leg.br">
 <title>Controle de campo</title>
 <meta charset="utf-8">
 <style>
@@ -641,7 +645,7 @@ VIEWS.equipe = () => '<h1>Aplicadores</h1><p class="sub">Produtividade e contato
       '<td><div class="acoes">' + (D.links && D.links[a.cod] ? '<button class="btn btn-s" onclick="verLink(\'' + a.cod + '\')">Link de acesso</button>' : '<span class="peq muted">gerar links em Manutenção</span>') + '</div></td></tr>';
   }).join('') + '</tbody></table></div>' +
   '<div class="card bloco" style="margin-top:16px"><h2>Manutenção</h2><div class="filtros" style="margin:0">' +
-  [['formulario', 'Atualizar listas do formulário'], ['links', 'Gerar links (novos aplicadores)'], ['fotos', 'Importar ID e foto dos deputados'], ['universo', 'Recalcular aba UNIVERSO'], ['instalar', 'Reinstalar estrutura'], ['revogar', 'Revogar todos os links']]
+  [['cache', 'Recarregar dados da planilha'], ['formulario', 'Atualizar listas do formulário'], ['links', 'Gerar links (novos aplicadores)'], ['fotos', 'Importar ID e foto dos deputados'], ['universo', 'Recalcular aba UNIVERSO'], ['instalar', 'Reinstalar estrutura'], ['revogar', 'Revogar todos os links']]
     .map(a => '<button class="btn' + (a[0] === 'revogar' ? ' btn-x' : '') + '" onclick="admin(\'' + a[0] + '\',\'' + a[1] + '\')">' + a[1] + '</button>').join('') + '</div></div>' +
   '<p class="peq muted" style="margin-top:12px">Inclusão ou desativação de aplicador: aba APLICADORES da planilha (coluna Ativo), seguida dos botões "Atualizar listas do formulário" e "Gerar links", em Manutenção.' + (D.formEdit ? ' <a target="_blank" href="' + esc(D.formEdit) + '">Editar formulário</a> · ' : ' ') + (D.planilha ? '<a target="_blank" href="' + esc(D.planilha) + '">Abrir planilha</a>' : '') + '</p>';
 
@@ -833,7 +837,8 @@ LISTAS.deputados = () => {
   const MAX = 80, mostra = l.slice(0, F.maisDep ? l.length : MAX);
   $('#ldep').innerHTML = l.length ? mostra.map(p => {
     const st = SDEP[p.s] || SDEP.D, url = p.s === 'D' ? linkForm(p.g, D.cod) : '';
-    return '<div class="card cp' + (p.s === 'D' ? '' : ' fim') + '">' + (p.f ? '<img class="foto" src="' + esc(p.f) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<div class="foto"></div>') +
+    const foto = /^\d+$/.test(p.f || '') ? 'https://www.camara.leg.br/internet/deputado/bandep/' + p.f + '.jpg' : p.f;
+    return '<div class="card cp' + (p.s === 'D' ? '' : ' fim') + '">' + (foto ? '<img class="foto" src="' + esc(foto) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<div class="foto"></div>') +
       '<div class="info"><div class="nome">' + esc(p.n) + ' <span class="muted">(' + esc(p.p) + '/' + esc(p.u) + ')</span></div>' +
       '<div class="peq" style="margin-top:2px">Gabinete <b>' + esc(p.g) + '</b>' + (p.pr ? ' · ' + esc(p.pr) : '') + (p.a ? ' · ' + esc(p.a) + 'º andar' : '') + '</div>' +
       '<div style="margin-top:6px">' + badge(st[0], st[1]) + (p.s === 'F' ? ' <span class="peq muted">' + esc(p.e) + '</span>' : '') + '</div>' +
