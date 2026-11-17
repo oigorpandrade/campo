@@ -389,7 +389,7 @@ function montarBnav(itens) {
 
 function menuMais() {
   const extra = PAPEL === 'coord' ? [['dirigida', 'Fase dirigida', D.dirigida.ativa ? D.dirigida.semAtrib : 0], ['pagamentos', 'Pagamentos'], ['equipe', 'Aplicadores e manutenção']] : [];
-  abrirModal('<h3>Mais opções</h3><p class="peq muted" style="margin:0">' + esc(D.nome) + (PAPEL === 'coord' ? ' · coordenação' : ' · aplicador') + ' · atualizado em ' + esc(D.atualizado) + '</p><div class="menu-mais">' +
+  abrirModal('<h3>Mais opções</h3><p class="peq muted" style="margin:0">' + esc(D.nome) + (PAPEL === 'coord' ? (/coordena/i.test(D.nome) ? '' : ' · coordenação') : ' · aplicador') + ' · atualizado em ' + esc(D.atualizado) + '</p><div class="menu-mais">' +
     extra.map(i => '<button onclick="fecharModal();ir(\'' + i[0] + '\')">' + svg(i[0]) + i[1] + (i[2] ? '<span class="pill">' + i[2] + '</span>' : '') + '</button>').join('') +
     '<button onclick="fecharModal();carregar()">' + svg('atualizar') + 'Atualizar dados</button>' +
     (API_URL && !emApp() ? '<button onclick="fecharModal();instalar()">' + svg('instalar') + 'Instalar na tela inicial</button>' : '') +
