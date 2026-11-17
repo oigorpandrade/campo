@@ -329,6 +329,11 @@ function linkForm(gab, codAplic) {
   const ap = (D.aplicadores || []).find(a => a.cod === codAplic) || D.aplicador;
   const q = ['usp=pp_url'];
   if (ap && pf.eAplic) q.push('entry.' + pf.eAplic + '=' + encodeURIComponent(ap.cod + ' · ' + ap.nome));
+  if (pf.eVer) {
+    // v11: alterna as versões A e B entre as entrevistas de cada aplicador (ordem das perguntas Q04 e Q05)
+    const n = ap && typeof ap.enviadas === 'number' ? ap.enviadas : Math.floor(Math.random() * 2);
+    q.push('entry.' + pf.eVer + '=' + (n % 2 === 0 ? 'A' : 'B'));
+  }
   if (gab && pf.eGab) q.push('entry.' + pf.eGab + '=' + encodeURIComponent(gab));
   return pf.base + '?' + q.join('&');
 }
@@ -808,7 +813,7 @@ VIEWS.campo = () => {
     '<div class="mini"><div class="v">' + (a.enviadas || 0) + '</div><div class="r">enviados</div></div><div class="mini"><div class="v">' + (a.aprov || 0) + '</div><div class="r">aprovados</div></div><div class="mini"><div class="v" style="font-size:17px">' + brl(pg.total) + '</div><div class="r">apurado</div></div></div>' +
     '<div class="card bloco" style="text-align:center;padding:22px 18px">' +
     (url ? '<a class="btn btn-p btn-g" target="_blank" href="' + esc(url) + '">Aplicar questionário</a>' : '<span class="muted">Formulário não configurado. Avise a coordenação.</span>') +
-    '<p class="peq muted" style="margin:12px 0 0">Abra o questionário ao iniciar a entrevista e registre a hora de início. Ao final, pergunte o número do gabinete e digite no formulário. O formulário recusa número inexistente.</p></div>' +
+    '<p class="peq muted" style="margin:12px 0 0">Abra o questionário ao iniciar a entrevista e registre a hora de início. Confira a versão (A ou B) antes das perguntas 4 e 5. Na última parte, pergunte o número do gabinete e digite no formulário. O formulário recusa número inexistente.</p></div>' +
     '<div class="card bloco"><h2>Estratos fechados <span class="dir">' + fe.length + '</span></h2>' +
     (fe.length ? '<ul class="avisos">' + fe.map(e => '<li><b>' + esc(e.estrato) + '</b> <span class="muted peq">desde ' + esc(e.em) + '</span></li>').join('') + '</ul>' +
       '<p class="peq muted" style="margin:10px 0 0">Lista para orientação. Entrevista com deputado desses partidos ou federações, iniciada depois do fechamento, não é validada nem paga. O campo segue normalmente.</p>'
